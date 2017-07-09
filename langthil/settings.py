@@ -25,7 +25,7 @@ SECRET_KEY = 'fcltl^=7&3_5p_z&m5sh4!rq@giup6ev29r7qsu@a7%l+a^=3&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['langthil.info']
 
 
 # Application definition
