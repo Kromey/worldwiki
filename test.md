@@ -1,0 +1,5 @@
+So in Langthil, the planet where everybody lives in also called **Langthil**.
+
+In the Eldrin conlang I'm working on for this world, the word *lāŋ* means *three*; when used as a prefix it becomes the ordinal number *third*. The word *þǐl* means *world*. Thus, *lāŋþǐl*, which is typically transcribed as *langthil*, means "the third world". In Eldrin belief, the gods came from the First World (*Elthil*), then they created the Eldrin when they created the Second World (*Dothil*), and when they created the Third World (*Langthil*) they brought the Eldrin to it from the Second.
+
+So, a long-winded explanation of "I made a conlang and invented the name for my world from it". While my intent is to develop the Eldrin language into something you could actually converse with, you could go simpler and just devise a "naming language" for your own world to name your various planets from; while I've not settled yet on how many there are, the primary planet in Langthil is of course part of a solar system probably quite similar to our own, and I'll certainly be using Eldrin to name them when I get around to that.
