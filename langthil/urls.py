@@ -16,6 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+
+from wiki.views import PageView
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^(?P<path>.*)', PageView.as_view(), name='wiki'),
 ]
