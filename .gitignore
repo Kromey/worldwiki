@@ -1,4 +1,5 @@
 db.sqlite3
+htdocs/static/
 
 # Ignore the vassal file/symlink
 /vassal.ini
