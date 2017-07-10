@@ -1,3 +1,5 @@
+db.sqlite3
+
 # Ignore the vassal file/symlink
 /vassal.ini
 
