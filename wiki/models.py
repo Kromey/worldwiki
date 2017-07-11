@@ -6,6 +6,11 @@ import bleach
 import markdown
 
 
+cleaner = bleach.sanitizer.Cleaner()
+converter = markdown.Markdown(output_format='html5')
+linker = bleach.linkifier.Linker()
+
+
 # Create your models here.
 
 class Page(models.Model):
@@ -14,9 +19,9 @@ class Page(models.Model):
 
     @property
     def as_html(self):
-        clean_body = bleach.clean(self.body)
-        html = markdown.markdown(clean_body)
-        linked = bleach.linkify(html)
+        clean_body = cleaner.clean(self.body)
+        html = converter.reset().convert(clean_body)
+        linked = linker.linkify(html)
 
         return mark_safe(linked)
 
