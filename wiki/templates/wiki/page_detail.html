@@ -1,7 +1,26 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<pre>{{ page.body }}</pre>
-<hr>
-{{ page.as_html }}
+<div class="page_content">
+	<div>
+		{{ page.as_html }}
+	</div>
+	<button class="btn btn-xs btn-primary" id="show-source">View Source</button>
+</div>
+
+<div class="page_source">
+	<div>
+		{{ page.body }}
+	</div>
+	<button class="btn btn-xs btn-primary" id="hide-source">Hide Source</button>
+</div>
 {% endblock content %}
+
+{% block styles %}
+<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'wiki/wiki.js' %}"></script>
+{% endblock %}
