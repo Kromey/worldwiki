@@ -4,10 +4,19 @@ from django.utils.safestring import mark_safe
 
 import bleach
 import markdown
+from markdown.extensions.toc import TocExtension
 
 
 cleaner = bleach.sanitizer.Cleaner()
-converter = markdown.Markdown(output_format='html5')
+converter = markdown.Markdown(
+        output_format='html5',
+        extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.smarty',
+            'markdown.extensions.admonition',
+            TocExtension(permalink=True),
+            ],
+        )
 linker = bleach.linkifier.Linker()
 
 
