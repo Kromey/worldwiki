@@ -22,5 +22,5 @@ from wiki.views import ArticleView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^w/(?P<slug>[-\w]+)/?$', ArticleView.as_view(), name='wiki'),
+    url(r'^w/(?P<slug>[-\w:]+)/?$', ArticleView.as_view(), name='wiki'),
 ]
