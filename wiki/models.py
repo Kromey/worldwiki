@@ -1,3 +1,8 @@
+import re
+
+
+from django import forms
+from django.core.validators import RegexValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
@@ -22,11 +27,25 @@ converter = markdown.Markdown(
 linker = bleach.linkifier.Linker()
 
 
+slug_re = re.compile(r'^[-a-zA-Z0-9_:]+$')
+validate_slug = RegexValidator(slug_re, 'Please enter a valid slug consisting of letters, numbers, underscores, hyphens, or colons', 'invalid')
+
+class WikiSlugFormField(forms.SlugField):
+    default_validators = [validate_slug,]
+
+
+class WikiSlugField(models.SlugField):
+    validators = [validate_slug,]
+
+    def formfield(self, **kwargs):
+        return super().formfield(form_class=WikiSlugFormField, **kwargs)
+
+
 # Create your models here.
 
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
-    slug = models.SlugField(unique=True)
+    slug = WikiSlugField(unique=True)
     published = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     is_nsfw = models.BooleanField('NSFW?', default=False)
