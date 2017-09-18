@@ -20,7 +20,14 @@
 		<![endif]-->
 	</head>
 	<body>
-		{% block content %}Hello, world!{% endblock content %}
+		<div class="container">
+			<div class="row">
+				<div class="{{ sidebar_class }}">{{ sidebar_content }}</div>
+				<div class="{{ content_class }}">
+					{% block content %}Hello, world!{% endblock content %}
+				</div>
+			</div>
+		</div>
 
 		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 		<script src="/js/jquery.min.js"></script>
