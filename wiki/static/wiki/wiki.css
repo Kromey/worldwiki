@@ -1,7 +1,7 @@
-.page_source {
+.article_source {
 	display: none;
 }
-.page_source div {
+.article_source div {
 	white-space: pre-line;
 	font-family: monospace;
 }

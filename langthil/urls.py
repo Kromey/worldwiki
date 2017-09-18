@@ -17,10 +17,10 @@ from django.conf.urls import url
 from django.contrib import admin
 
 
-from wiki.views import PageView
+from wiki.views import ArticleView
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^(?P<path>.*)', PageView.as_view(), name='wiki'),
+    url(r'^w/(?P<slug>[-\w]+)/?$', ArticleView.as_view(), name='wiki'),
 ]

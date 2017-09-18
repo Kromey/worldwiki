@@ -6,7 +6,7 @@ from . import models
 
 # Register your models here.
 
-class PageAdmin(admin.ModelAdmin):
-    pass
+class ArticleAdmin(admin.ModelAdmin):
+    prepopulated_fields = {"slug": ("title",)}
 
-admin.site.register(models.Page, PageAdmin)
+admin.site.register(models.Article, ArticleAdmin)

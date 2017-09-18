@@ -2,16 +2,16 @@
 {% load static %}
 
 {% block content %}
-<div class="page_content">
+<div class="article_content">
 	<div>
-		{{ page.as_html }}
+		{{ article.html }}
 	</div>
 	<button class="btn btn-xs btn-primary" id="show-source">View Source</button>
 </div>
 
-<div class="page_source">
+<div class="article_source">
 	<div>
-		{{ page.body }}
+		{{ article.markdown }}
 	</div>
 	<button class="btn btn-xs btn-primary" id="hide-source">Hide Source</button>
 </div>
