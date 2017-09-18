@@ -28,8 +28,8 @@ class Article(models.Model):
     slug = models.SlugField(unique=True)
     published = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
-    is_nsfw = models.BooleanField(default=False)
-    is_spoiler = models.BooleanField(default=False)
+    is_nsfw = models.BooleanField('NSFW?', default=False)
+    is_spoiler = models.BooleanField('spoiler?', default=False)
     markdown = models.TextField('article content', help_text='Formatted using Markdown')
 
     @property
