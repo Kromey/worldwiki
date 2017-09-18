@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 
@@ -48,4 +49,12 @@ class Article(models.Model):
             self.slug = slugify(self.title)
 
         return super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('wiki', args=[self.slug])
+
+    def view_link(self):
+        return '<a target="_blank" href="{url}">{url}</a>'.format(url=self.get_absolute_url())
+    view_link.short_description = 'view on site'
+    view_link.allow_tags = True
 

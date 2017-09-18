@@ -23,6 +23,7 @@ class ArticleAdmin(admin.ModelAdmin):
             )
     list_display = (
             'title',
+            'view_link',
             'published',
             'edited',
             'is_nsfw',
