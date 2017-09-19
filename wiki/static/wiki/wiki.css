@@ -81,6 +81,9 @@ span.subheader {
 	font-family: monospace;
 }
 
+a.wikilink.new {
+	color: #ba0000;
+}
 a.headerlink {
 	display: none;
 }
