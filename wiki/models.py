@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 
@@ -50,8 +51,9 @@ class WikiSlugField(models.SlugField):
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
     slug = WikiSlugField(unique=True)
-    published = models.DateTimeField(auto_now_add=True)
+    published = models.DateTimeField(null=True, default=None)
     edited = models.DateTimeField(auto_now=True)
+    is_published = models.BooleanField('publish?', default=False)
     is_nsfw = models.BooleanField('NSFW?', default=False)
     is_spoiler = models.BooleanField('spoiler?', default=False)
     markdown = models.TextField('article content', help_text='Formatted using Markdown')
@@ -70,6 +72,9 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
+
+        if self.is_published and not self.published:
+            self.published = timezone.now()
 
         return super().save(*args, **kwargs)
 

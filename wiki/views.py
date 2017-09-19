@@ -9,7 +9,7 @@ from .models import Article
 # Create your views here.
 
 class ArticleView(DetailView):
-    model = Article
+    queryset = Article.objects.filter(is_published=True)
     context_object_name = 'article'
 
     def get_object(self, queryset=None):

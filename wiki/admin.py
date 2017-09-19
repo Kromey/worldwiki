@@ -16,6 +16,7 @@ class ArticleAdmin(admin.ModelAdmin):
                 'edited',
             ),
             (
+                'is_published',
                 'is_nsfw',
                 'is_spoiler',
             ),
@@ -26,6 +27,7 @@ class ArticleAdmin(admin.ModelAdmin):
             'view_link',
             'published',
             'edited',
+            'is_published',
             'is_nsfw',
             'is_spoiler',
             )
