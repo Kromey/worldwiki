@@ -5,7 +5,7 @@ def wiki_sidebar(request):
     try:
         sidebar = Article.objects.get(slug='sidebar')
         return {
-                'sidebar_content': sidebar.html,
+                'sidebar_content': sidebar.simple_html,
                 'sidebar_class': 'sidebar col-md-3',
                 'content_class': 'content col-md-9',
                 }
