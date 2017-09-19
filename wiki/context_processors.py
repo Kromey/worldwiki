@@ -3,7 +3,7 @@ from .models import Article
 
 def wiki_sidebar(request):
     try:
-        sidebar = Article.objects.get(slug='sidebar')
+        sidebar = Article.objects.get(slug='special:sidebar')
         return {
                 'sidebar_content': sidebar.simple_html,
                 'sidebar_class': 'sidebar col-md-3',
