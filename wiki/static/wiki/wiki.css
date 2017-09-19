@@ -21,6 +21,47 @@ span.subheader {
 	margin-top: 20px;
 	font-size: 95%;
 }
+.sidebar h1,
+.sidebar h2,
+.sidebar h3,
+.sidebar h4,
+.sidebar h5,
+.sidebar h6
+{
+	margin: 0;
+	margin-bottom: 10px;
+}
+.sidebar h1 {
+	font-size: 30px;
+}
+.sidebar h2 {
+	font-size: 25px;
+}
+.sidebar h3 {
+	font-size: 20px;
+}
+.sidebar h4 {
+	font-size: 15px;
+}
+.sidebar h5 {
+	font-size: 10px;
+}
+.sidebar h6 {
+	font-size: 10px;
+}
+.sidebar ul {
+	list-style: none;
+	padding: 0;
+}
+.sidebar li a {
+	display: block;
+	padding: 2px 10px;
+	border-radius: 5px;
+}
+.sidebar li a:hover {
+	background-color: #eee;
+	text-decoration: none;
+}
 
 .article_content h1:first-child,
 .article_content h2:first-child,
