@@ -20,6 +20,10 @@
 		<![endif]-->
 	</head>
 	<body>
+		<div class="header">
+			<h1>{% block header %}Welcome{% endblock %}<span class="subheader">The World of Langthil</span></h1>
+		</div>
+
 		<div class="container">
 			<div class="row">
 				<div class="{{ sidebar_class }}">{{ sidebar_content }}</div>

@@ -1,3 +1,13 @@
+.header {
+	text-align: center;
+}
+span.subheader {
+	display: block;
+	font-size: 50%;
+	color: #666;
+	font-style: italic;
+}
+
 .content {
 	border-radius: 15px;
 	padding: 15px;
@@ -8,6 +18,16 @@
 .sidebar {
 	margin-top: 20px;
 	font-size: 95%;
+}
+
+.article_content h1:first-child,
+.article_content h2:first-child,
+.article_content h3:first-child,
+.article_content h4:first-child,
+.article_content h5:first-child,
+.article_content h6:first-child
+{
+	margin-top: 0;
 }
 
 .article_source {
