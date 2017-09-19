@@ -3,9 +3,11 @@
 }
 span.subheader {
 	display: block;
-	font-size: 50%;
-	color: #666;
+	margin-top: -10px;
+	font-size: 18px;
+	font-weight: 500;
 	font-style: italic;
+	color: #666;
 }
 
 .content {
