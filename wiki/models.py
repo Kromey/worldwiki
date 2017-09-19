@@ -14,6 +14,9 @@ import markdown
 from markdown.extensions.toc import TocExtension
 
 
+from .markdown import WikiLinksExtension
+
+
 cleaner = bleach.sanitizer.Cleaner()
 converter = markdown.Markdown(
         output_format='html5',
@@ -22,6 +25,7 @@ converter = markdown.Markdown(
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
             TocExtension(permalink=True),
+            WikiLinksExtension(),
             ],
         )
 linker = bleach.linkifier.Linker()
