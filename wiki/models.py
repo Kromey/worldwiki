@@ -25,7 +25,7 @@ converter = markdown.Markdown(
             'markdown.extensions.extra',
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
-            TocExtension(permalink=True),
+            TocExtension(permalink=True, baselevel=2),
             WikiLinksExtension(),
             ],
         )
