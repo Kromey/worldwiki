@@ -13,14 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url, include
 from django.contrib import admin
-
-
-from wiki.views import ArticleView
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^w/(?P<slug>[-\w:]+)/?$', ArticleView.as_view(), name='wiki'),
+    url(r'^w/', include('wiki.urls')),
 ]
