@@ -1,3 +1,7 @@
+body {
+	background-image: linear-gradient(to bottom, #eee, #fff);
+	background-attachment: fixed;
+}
 .header {
 	text-align: center;
 }
@@ -15,6 +19,7 @@ span.subheader {
 	padding: 15px;
 	margin-top: 15px;
 	box-shadow: 0px 0px 10px #666;
+	background-color: #f8f8f8;
 }
 
 .sidebar {
@@ -59,7 +64,7 @@ span.subheader {
 	border-radius: 5px;
 }
 .sidebar li a:hover {
-	background-color: #eee;
+	background-color: #d8d8d8;
 	text-decoration: none;
 }
 
