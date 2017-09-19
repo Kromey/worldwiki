@@ -86,3 +86,6 @@ class Article(models.Model):
     view_link.short_description = 'view on site'
     view_link.allow_tags = True
 
+    def get_admin_url(self):
+        return reverse('admin:wiki_article_change', args=(self.pk,))
+

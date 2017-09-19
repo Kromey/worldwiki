@@ -5,6 +5,7 @@
 {% block header %}{{ article.title }}{% endblock %}
 
 {% block content %}
+{% if user.is_staff or user.is_superuser %}<a class="btn btn-xs btn-default pull-right" id="edit-page" href="{{ article.get_admin_url }}">Edit</a>{% endif %}
 <div class="article_content">
 	<div>
 		{{ article.html }}
