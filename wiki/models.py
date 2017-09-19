@@ -89,6 +89,11 @@ class Article(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
 
+        if self.slug.startswith('special:'):
+            self.is_published = False
+            self.is_nsfw = False
+            self.is_spoiler = False
+
         if self.is_published and not self.published:
             self.published = timezone.now()
 
