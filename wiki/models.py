@@ -29,14 +29,6 @@ converter = markdown.Markdown(
             WikiLinksExtension(),
             ],
         )
-simple_converter = markdown.Markdown(
-        output_format='html5',
-        extensions=[
-            'markdown.extensions.extra',
-            TocExtension(baselevel=2),
-            WikiLinksExtension(),
-            ],
-        )
 linker = bleach.linkifier.Linker()
 
 
@@ -70,14 +62,6 @@ class Article(models.Model):
     def html(self):
         clean_body = cleaner.clean(self.markdown)
         html = converter.reset().convert(clean_body)
-        linked = linker.linkify(html)
-
-        return mark_safe(linked)
-
-    @property
-    def simple_html(self):
-        clean_body = cleaner.clean(self.markdown)
-        html = simple_converter.reset().convert(clean_body)
         linked = linker.linkify(html)
 
         return mark_safe(linked)
