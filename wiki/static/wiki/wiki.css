@@ -1,5 +1,5 @@
 body {
-	background-image: linear-gradient(to bottom, #eee, #fff);
+	background-image: linear-gradient(to bottom, #eff, #fff);
 	background-attachment: fixed;
 }
 .header {
@@ -19,7 +19,7 @@ span.subheader {
 	padding: 15px;
 	margin-top: 15px;
 	box-shadow: 0px 0px 10px #666;
-	background-color: #f8f8f8;
+	background-color: #f0f9fc;
 }
 
 .sidebar {
@@ -84,6 +84,13 @@ span.subheader {
 .article_source div {
 	white-space: pre-line;
 	font-family: monospace;
+}
+
+div#article_edited {
+	position: absolute;
+	right: 10px;
+	bottom: -30px;
+	font-size: 85%;
 }
 
 a.wikilink.new {

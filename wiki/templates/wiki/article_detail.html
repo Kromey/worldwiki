@@ -17,6 +17,10 @@
 	<div>{{ article.markdown }}</div>
 	<button role="button" class="btn btn-xs btn-default pull-right" id="hide-source">Hide Source</button>
 </div>
+
+<div id="article_edited">
+	Last modified on {{ article.edited }}
+</div>
 {% endblock content %}
 
 {% block styles %}
