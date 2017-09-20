@@ -108,3 +108,28 @@ h6:hover a.headerlink
 {
 	/*display: inline-block;*/
 }
+
+.toc {
+	float: right;
+	margin: 0;
+	padding: 0;
+}
+.toc ul {
+	margin: 0;
+	padding-left: 10px;
+	list-style: none;
+}
+
+.content th {
+	background-color: #eee;
+}
+.content th, .content td {
+	border: 1px solid #ccc;
+	padding: .3em .5em;
+}
+.content tr:hover th {
+	background-color: #ccc;
+}
+.content tr:hover td {
+	background-color: #eee;
+}
