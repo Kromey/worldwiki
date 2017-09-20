@@ -29,7 +29,7 @@ converter = markdown.Markdown(
             WikiLinksExtension(),
             ],
         )
-linker = bleach.linkifier.Linker()
+linker = bleach.linkifier.Linker(callbacks=[])
 
 
 slug_re = re.compile(r'^[-a-zA-Z0-9_:]+$')
