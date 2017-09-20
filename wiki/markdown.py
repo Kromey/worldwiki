@@ -27,14 +27,17 @@ class WikiLinks(Pattern):
 
         href = reverse('wiki', args=[link])
 
+        a = etree.Element('a')
+
         from .models import Article
         classes = ['wikilink',]
         try:
-            Article.objects.filter(is_published=True).get(slug=link)
+            article = Article.objects.filter(is_published=True).get(slug=link)
+            a.set('title', article.title)
         except Article.DoesNotExist:
             classes.append('new')
+            a.set('title', label+' (page does not exist)')
 
-        a = etree.Element('a')
         a.text = label
         a.set('href', href)
         a.set('class', ' '.join(classes))
