@@ -33,7 +33,13 @@ class WikiLinks(Pattern):
         classes = ['wikilink',]
         try:
             article = Article.objects.filter(is_published=True).get(slug=link)
-            a.set('title', article.title)
+            a.set(
+                    'title',
+                    '{title} ({date:%b %d, %Y})'.format(
+                        title = article.title,
+                        date = article.published.date(),
+                        )
+                    )
         except Article.DoesNotExist:
             classes.append('new')
             a.set('title', label+' (page does not exist)')
