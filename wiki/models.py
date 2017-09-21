@@ -5,7 +5,7 @@ from django import forms
 from django.core.validators import RegexValidator
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
@@ -74,7 +74,7 @@ class Article(models.Model):
             self.slug = slugify(self.title)
 
         if self.slug.startswith('special:'):
-            self.is_published = False
+            self.is_published = True
             self.is_nsfw = False
             self.is_spoiler = False
 
@@ -84,10 +84,18 @@ class Article(models.Model):
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('wiki', args=[self.slug])
+        try:
+            return reverse('wiki', args=[self.slug])
+        except NoReverseMatch:
+            return None
 
     def view_link(self):
-        return '<a target="_blank" href="{url}">{url}</a>'.format(url=self.get_absolute_url())
+        url = self.get_absolute_url()
+
+        if url:
+            return '<a target="_blank" href="{url}">{url}</a>'.format(url=self.get_absolute_url())
+        else:
+            return self.slug
     view_link.short_description = 'view on site'
     view_link.allow_tags = True
 
