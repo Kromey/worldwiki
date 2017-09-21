@@ -11,6 +11,8 @@ from .models import Article
 class ArticleView(DetailView):
     queryset = Article.objects.filter(is_published=True)
     context_object_name = 'article'
+    show_nsfw_content = False
+    nsfw_template_name = 'wiki/article_nsfw.html'
 
     def get_object(self, queryset=None):
         try:
@@ -20,4 +22,25 @@ class ArticleView(DetailView):
                 return Article.objects.get(slug='special:404')
             except Article.DoesNotExist:
                 raise e
+
+    def get_template_names(self):
+        names = super().get_template_names()
+
+        if self.object.is_nsfw and not self.show_nsfw_content:
+            names.insert(0, self.nsfw_template_name)
+
+        return names
+
+    def get(self, request, *args, **kwargs):
+        self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
+
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if request.POST.get('show-me'):
+            self.show_nsfw_content = True
+            if request.POST.get('remember'):
+                request.session['show_nsfw'] = True
+
+        return self.get(request, *args, **kwargs)
 

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}This Content May Be NSFW{% endblock %}
+{% block header %}This Content May Be NSFW{% endblock %}
+
+{% block content %}
+<div class="article_content article_nsfw">
+	<h2>Potentially graphic or offensive content</h2>
+
+	<p>
+	The content at "{{ article.title }}" has been flagged by the author
+	as being potentially
+	<abbr title="Not Safe For Work" class="initialism">NSFW</abbr>.
+	This could be because the content is sexually explicit, violent,
+	or otherwise offensive or disturbing to some readers.
+	</p>
+
+	<p>
+	<strong>Nothing on this site is pornographic.</strong> Violent,
+	sexual, and otherwise "offensive" content exists in the world of
+	Langthil for many of the same reasons as they do in the real
+	world. Langthil doesn't sweep these issues under the rug and
+	pretend they don't exist, and neither does it seek to minimize or
+	downplay them.
+	</p>
+
+	<p>
+	<form method="post">
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" name="show-me" value="true">
+				I understand and wish to continue
+			</label>
+		</div>
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" name="remember" value="true">
+				Remember your choice for the rest of this browser session
+			</label>
+		</div>
+		{% csrf_token %}
+		<button type="button" class="btn btn-success" id="go-back">Go Back</button>
+		<button type="submit" class="btn btn-warning" id="forward">Proceed</button>
+	</form>
+	</p>
+</div>
+{% endblock content %}
+
+{% block styles %}
+<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'wiki/wiki.js' %}"></script>
+{% endblock %}

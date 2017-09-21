@@ -13,6 +13,10 @@ span.subheader {
 	font-style: italic;
 	color: #666;
 }
+abbr[title] {
+	text-decoration: none;
+	border-color: inherit;
+}
 
 .content {
 	border-radius: 15px;
@@ -91,6 +95,21 @@ div#article_edited {
 	right: 10px;
 	bottom: -30px;
 	font-size: 85%;
+}
+
+.article_nsfw {
+	color: #a94442;
+	background-color: #f2dede;
+	padding: 15px;
+	border: 1px solid #dca7a7;
+	border-radius: 4px;
+	background-image: linear-gradient(to bottom,#f2dede 0,#e7c3c3 100%);
+}
+.article_nsfw>p {
+	margin-bottom: 0;
+}
+.article_nsfw>p+p {
+	margin-top: 5px;
 }
 
 a.wikilink.new {
