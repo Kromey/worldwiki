@@ -2,6 +2,7 @@ import re
 
 
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.text import slugify
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
@@ -37,7 +38,7 @@ class WikiLinks(Pattern):
                     'title',
                     '{title} ({date:%b %d, %Y})'.format(
                         title = article.title,
-                        date = article.published.date(),
+                        date = timezone.localtime(article.published),
                         )
                     )
         except Article.DoesNotExist:
