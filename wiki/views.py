@@ -12,6 +12,13 @@ class TagView(DetailView):
     model = Tag
     context_object_name = 'tag'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['articles'] = self.object.articles.order_by('slug')
+
+        return context
+
 
 class ArticleView(DetailView):
     context_object_name = 'article'

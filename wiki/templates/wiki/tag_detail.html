@@ -8,7 +8,7 @@
 <div class="tag-description">{{ tag.html }}</div>
 <div class="tag-articles">
 	<div class="row">
-		{% for article in tag.articles.all %}
+		{% for article in articles %}
 		<div class="col-lg-4 col-sm-6"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></div>
 		{% endfor %}
 	</div>
