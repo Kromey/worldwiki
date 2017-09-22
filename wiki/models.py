@@ -33,6 +33,12 @@ class WikiSlugField(models.SlugField):
 class Tag(models.Model):
     name = models.CharField(max_length=50)
     slug = WikiSlugField(unique=True)
+    description = models.TextField('tag description', help_text='Formatted using Markdown', blank=True)
+
+    @property
+    def html(self):
+        html = markdown_to_html(self.description)
+        return mark_safe(html)
 
     def __str__(self):
         return self.name

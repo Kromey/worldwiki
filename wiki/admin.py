@@ -15,6 +15,7 @@ class TagAdmin(admin.ModelAdmin):
     fields = (
             'name',
             'slug',
+            'description',
             )
 
 
