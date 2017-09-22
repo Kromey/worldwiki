@@ -9,10 +9,15 @@ from .models import Article
 # Create your views here.
 
 class ArticleView(DetailView):
-    queryset = Article.objects.filter(is_published=True)
     context_object_name = 'article'
     show_nsfw_content = False
     nsfw_template_name = 'wiki/article_nsfw.html'
+
+    def get_queryset(self):
+        if self.request.user.has_perm('wiki.change_article'):
+            return Article.objects.all()
+        else:
+            return Article.objects.filter(is_published=True)
 
     def get_object(self, queryset=None):
         try:
