@@ -29,6 +29,18 @@ class WikiSlugField(models.SlugField):
 
 # Create your models here.
 
+
+class Tag(models.Model):
+    name = models.CharField(max_length=50)
+    slug = WikiSlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ('name',)
+
+
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
     slug = WikiSlugField(unique=True)
@@ -37,6 +49,11 @@ class Article(models.Model):
     is_published = models.BooleanField('publish?', default=False)
     is_nsfw = models.BooleanField('NSFW?', default=False)
     is_spoiler = models.BooleanField('spoiler?', default=False)
+    tags = models.ManyToManyField(
+            Tag,
+            related_name='articles',
+            related_query_name='article',
+            )
     markdown = models.TextField('article content', help_text='Formatted using Markdown')
 
     @property
