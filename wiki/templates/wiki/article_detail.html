@@ -9,7 +9,9 @@
 	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
 	{% if article.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
 	{% if article.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
-	{% for tag in article.tags.all %}<span class="label label-info">{{ tag }}</span> {% endfor %}
+	{% for tag in article.tags.all %}
+	<a href="{% url 'wiki-tag' slug=tag.slug %}" class="label label-info">{{ tag }}</a>
+	{% endfor %}
 	{% if perms.wiki.change_article %}<a class="btn btn-xs btn-default" id="edit-page" href="{{ article.get_admin_url }}">Edit</a>{% endif %}
 </div>
 <div class="article_content">
