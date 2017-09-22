@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Articles tagged "{{ tag.name }}"{% endblock %}
+{% block header %}Articles tagged "{{ tag.name }}"{% endblock %}
+
+{% block content %}
+<div class="tag-description">{{ tag.html }}</div>
+<div class="tag-articles">
+	<div class="row">
+		{% for article in tag.articles.all %}
+		<div class="col-lg-4 col-sm-6"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock content %}
+
+{% block styles %}
+<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'wiki/wiki.js' %}"></script>
+{% endblock %}

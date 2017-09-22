@@ -3,10 +3,15 @@ from django.shortcuts import render
 from django.views.generic import DetailView,ListView
 
 
-from .models import Article
+from .models import Article,Tag
 
 
 # Create your views here.
+
+class TagView(DetailView):
+    model = Tag
+    context_object_name = 'tag'
+
 
 class ArticleView(DetailView):
     context_object_name = 'article'
