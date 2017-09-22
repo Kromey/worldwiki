@@ -26,10 +26,14 @@ class WikiLinks(Pattern):
         link = m.group('link').strip()
         label = m.group('label') or link
 
-        link = slugify(link)
         label = label.strip()
 
-        href, title, classes = self.build_article_link(link, label)
+        if link.lower().startswith('tag:'):
+            tag = slugify(link.split(':')[1])
+            href, title, classes = self.build_tag_link(tag, label)
+        else:
+            link = slugify(link)
+            href, title, classes = self.build_article_link(link, label)
 
         classes.append('wikilink')
 
@@ -40,6 +44,20 @@ class WikiLinks(Pattern):
         a.set('title', title)
 
         return a
+
+    def build_tag_link(self, slug, label):
+        from .models import Tag
+        classes = ['wikitag']
+        try:
+            tag = Tag.objects.get(slug=slug)
+            title = 'Pages tagged "{tag}"'.format(tag=tag.name)
+        except Tag.DoesNotExist:
+            classes.append('new')
+            title = 'No tag "{label}"'.format(label=label)
+
+        href = reverse('wiki-tag', args=[slug])
+
+        return (href, title, classes)
 
     def build_article_link(self, slug, label):
         from .models import Article
