@@ -53,6 +53,7 @@ class Article(models.Model):
             Tag,
             related_name='articles',
             related_query_name='article',
+            blank=True,
             )
     markdown = models.TextField('article content', help_text='Formatted using Markdown')
 
