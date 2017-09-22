@@ -1,3 +1,4 @@
+import html
 import re
 
 
@@ -19,14 +20,14 @@ wikilink_re = re.compile(wikilink_pattern)
 class WikiLinksExtension(Extension):
     def extendMarkdown(self, md, md_globals):
         wikilinks = WikiLinks(wikilink_pattern)
-        md.inlinePatterns.add('wikilinks', wikilinks, '_end')
+        md.inlinePatterns.add('wikilinks', wikilinks, '>link')
 
 class WikiLinks(Pattern):
     def handleMatch(self, m):
         link = m.group('link').strip()
         label = m.group('label') or link
 
-        label = label.strip()
+        label = html.unescape(label.strip())
 
         if link.lower().startswith('tag:'):
             tag = slugify(link.split(':')[1])
@@ -70,7 +71,7 @@ class WikiLinks(Pattern):
                         )
         except Article.DoesNotExist:
             classes.append('new')
-            title = label+' (page does not exist)'
+            title = '{label} (page does not exist)'.format(label=label)
 
         href = reverse('wiki', args=[slug])
 
