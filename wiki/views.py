@@ -20,6 +20,11 @@ class TagView(DetailView):
         return context
 
 
+class ArticleListView(ListView):
+    queryset = Article.objects.filter(is_published=True).exclude(slug__startswith='special:').order_by('slug')
+    context_object_name = 'articles'
+
+
 class ArticleView(DetailView):
     context_object_name = 'article'
     show_nsfw_content = False
