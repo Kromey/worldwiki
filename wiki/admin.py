@@ -7,7 +7,6 @@ from . import models
 # Register your models here.
 
 class TagAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
     list_display = (
             'name',
             'slug',
@@ -20,7 +19,6 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class ArticleAdmin(admin.ModelAdmin):
-    prepopulated_fields = {"slug": ("title",)}
     fields = (
             'title',
             'slug',

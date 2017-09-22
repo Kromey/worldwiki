@@ -4,13 +4,13 @@ import re
 from django import forms
 from django.core.validators import RegexValidator
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.urls import reverse, NoReverseMatch
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 
 from .markdown import markdown_to_html
+from .utils import slugify
 
 
 slug_re = re.compile(r'^[-a-zA-Z0-9_:]+$')
@@ -32,7 +32,7 @@ class WikiSlugField(models.SlugField):
 
 class Tag(models.Model):
     name = models.CharField(max_length=50)
-    slug = WikiSlugField(unique=True)
+    slug = WikiSlugField(unique=True, blank=True)
     description = models.TextField('tag description', help_text='Formatted using Markdown', blank=True)
 
     @property
@@ -43,13 +43,19 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        return super().save(*args, **kwargs)
+
     class Meta:
         ordering = ('name',)
 
 
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
-    slug = WikiSlugField(unique=True)
+    slug = WikiSlugField(unique=True, blank=True)
     published = models.DateTimeField(null=True, default=None)
     edited = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField('publish?', default=False)

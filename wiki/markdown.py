@@ -5,12 +5,14 @@ import re
 import bleach
 from django.urls import reverse
 from django.utils import timezone
-from django.utils.text import slugify
 import markdown
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
 from markdown.util import etree
 from markdown.extensions.toc import TocExtension
+
+
+from .utils import slugify
 
 
 wikilink_pattern = r'\[\[(?P<link>[-\w_: ]+)(?:\|(?P<label>[^\]]+))?\]\]'
