@@ -6,6 +6,18 @@ from . import models
 
 # Register your models here.
 
+class TagAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+    list_display = (
+            'name',
+            'slug',
+            )
+    fields = (
+            'name',
+            'slug',
+            )
+
+
 class ArticleAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}
     fields = (
@@ -21,6 +33,7 @@ class ArticleAdmin(admin.ModelAdmin):
                 'is_spoiler',
             ),
             'markdown',
+            'tags',
             )
     list_display = (
             'title',
@@ -32,5 +45,7 @@ class ArticleAdmin(admin.ModelAdmin):
             'is_spoiler',
             )
     readonly_fields = ('published','edited')
+    filter_horizontal = ('tags',)
 
+admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Article, ArticleAdmin)
