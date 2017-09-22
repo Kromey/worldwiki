@@ -29,30 +29,34 @@ class WikiLinks(Pattern):
         link = slugify(link)
         label = label.strip()
 
-        href = reverse('wiki', args=[link])
+        href, title, classes = self.build_article_link(link, label)
+
+        classes.append('wikilink')
 
         a = etree.Element('a')
-
-        from .models import Article
-        classes = ['wikilink',]
-        try:
-            article = Article.objects.filter(is_published=True).get(slug=link)
-            a.set(
-                    'title',
-                    '{title} ({date:%b %d, %Y})'.format(
-                        title = article.title,
-                        date = timezone.localtime(article.published),
-                        )
-                    )
-        except Article.DoesNotExist:
-            classes.append('new')
-            a.set('title', label+' (page does not exist)')
-
         a.text = label
         a.set('href', href)
         a.set('class', ' '.join(classes))
+        a.set('title', title)
 
         return a
+
+    def build_article_link(self, slug, label):
+        from .models import Article
+        classes = []
+        try:
+            article = Article.objects.filter(is_published=True).get(slug=slug)
+            title = '{title} ({date:%b %d, %Y})'.format(
+                        title = article.title,
+                        date = timezone.localtime(article.published),
+                        )
+        except Article.DoesNotExist:
+            classes.append('new')
+            title = label+' (page does not exist)'
+
+        href = reverse('wiki', args=[slug])
+
+        return (href, title, classes)
 
 
 cleaner = bleach.sanitizer.Cleaner()
