@@ -5,7 +5,12 @@
 {% block header %}{{ article.title }}{% endblock %}
 
 {% block content %}
-{% if user.is_staff or user.is_superuser %}<a class="btn btn-xs btn-default pull-right" id="edit-page" href="{{ article.get_admin_url }}">Edit</a>{% endif %}
+<div class="articles-tags text-right">
+	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
+	{% if article.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
+	{% if article.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
+	{% if perms.wiki.change_article %}<a class="btn btn-xs btn-default" id="edit-page" href="{{ article.get_admin_url }}">Edit</a>{% endif %}
+</div>
 <div class="article_content">
 	<div>
 		{{ article.html }}
