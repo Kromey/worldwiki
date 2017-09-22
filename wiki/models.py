@@ -10,26 +10,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 
-import bleach
-import markdown
-from markdown.extensions.toc import TocExtension
-
-
-from .markdown import WikiLinksExtension
-
-
-cleaner = bleach.sanitizer.Cleaner()
-converter = markdown.Markdown(
-        output_format='html5',
-        extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.smarty',
-            'markdown.extensions.admonition',
-            TocExtension(permalink=True, baselevel=2),
-            WikiLinksExtension(),
-            ],
-        )
-linker = bleach.linkifier.Linker(callbacks=[])
+from .markdown import markdown_to_html
 
 
 slug_re = re.compile(r'^[-a-zA-Z0-9_:]+$')
@@ -60,11 +41,8 @@ class Article(models.Model):
 
     @property
     def html(self):
-        clean_body = cleaner.clean(self.markdown)
-        html = converter.reset().convert(clean_body)
-        linked = linker.linkify(html)
-
-        return mark_safe(linked)
+        html = markdown_to_html(self.markdown)
+        return mark_safe(html)
 
     def __str__(self):
         return self.title

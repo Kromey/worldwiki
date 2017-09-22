@@ -1,12 +1,15 @@
 import re
 
 
+import bleach
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+import markdown
 from markdown.extensions import Extension
 from markdown.inlinepatterns import Pattern
 from markdown.util import etree
+from markdown.extensions.toc import TocExtension
 
 
 wikilink_pattern = r'\[\[(?P<link>[-\w_: ]+)(?:\|(?P<label>[^\]]+))?\]\]'
@@ -50,4 +53,26 @@ class WikiLinks(Pattern):
         a.set('class', ' '.join(classes))
 
         return a
+
+
+cleaner = bleach.sanitizer.Cleaner()
+converter = markdown.Markdown(
+        output_format='html5',
+        extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.smarty',
+            'markdown.extensions.admonition',
+            TocExtension(permalink=True, baselevel=2),
+            WikiLinksExtension(),
+            ],
+        )
+linker = bleach.linkifier.Linker(callbacks=[])
+
+
+def markdown_to_html(md):
+    clean_md = cleaner.clean(md)
+    html = converter.reset().convert(clean_md)
+    linked = linker.linkify(html)
+
+    return linked
 
