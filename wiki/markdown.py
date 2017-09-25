@@ -53,6 +53,7 @@ class WikiLinks(Pattern):
         classes = ['wikitag']
         try:
             tag = Tag.objects.get(slug__iexact=slug)
+            slug = tag.slug
             title = 'Pages tagged "{tag}"'.format(tag=tag.name)
         except Tag.DoesNotExist:
             classes.append('new')
@@ -67,6 +68,7 @@ class WikiLinks(Pattern):
         classes = []
         try:
             article = Article.objects.filter(is_published=True).get(slug__iexact=slug)
+            slug = article.slug
             title = '{title} ({date:%b %d, %Y})'.format(
                         title = article.title,
                         date = timezone.localtime(article.published),
