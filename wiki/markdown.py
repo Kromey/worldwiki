@@ -15,7 +15,7 @@ from markdown.extensions.toc import TocExtension
 from .utils import slugify
 
 
-wikilink_pattern = r'\[\[(?P<link>[-\w_: ]+)(?:\|(?P<label>[^\]]+))?\]\]'
+wikilink_pattern = r'\[\[(?:(?P<namespace>[-\w_]+):)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]'
 wikilink_re = re.compile(wikilink_pattern)
 
 
@@ -26,16 +26,16 @@ class WikiLinksExtension(Extension):
 
 class WikiLinks(Pattern):
     def handleMatch(self, m):
+        namespace = m.group('namespace')
         link = m.group('link').strip()
         label = m.group('label') or link
 
+        link = slugify(html.unescape(link.strip()))
         label = html.unescape(label.strip())
 
-        if link.lower().startswith('tag:'):
-            tag = slugify(link.split(':')[1])
-            href, title, classes = self.build_tag_link(tag, label)
+        if namespace and namespace.lower() == 'tag':
+            href, title, classes = self.build_tag_link(link, label)
         else:
-            link = slugify(link)
             href, title, classes = self.build_article_link(link, label)
 
         classes.append('wikilink')
