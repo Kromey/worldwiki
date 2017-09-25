@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+
+from . import site_settings
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,12 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fcltl^=7&3_5p_z&m5sh4!rq@giup6ev29r7qsu@a7%l+a^=3&'
+SECRET_KEY = site_settings.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = site_settings.SECRET_KEY
 
-ALLOWED_HOSTS = ['langthil.info']
+ALLOWED_HOSTS = site_settings.ALLOWED_HOSTS
 
 
 # Application definition
@@ -77,12 +80,7 @@ WSGI_APPLICATION = 'langthil.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'langthil',
-    }
-}
+DATABASES = site_settings.DATABASES
 
 
 # Password validation

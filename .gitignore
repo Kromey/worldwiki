@@ -1,3 +1,4 @@
+site_settings.py
 db.sqlite3
 htdocs/static/
 

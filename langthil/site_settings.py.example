@@ -1,0 +1,33 @@
+"""Site- or environment-specific Django settings
+
+Use this file to configure site-specific settings, such as SECRET_KEY and your
+database settings.
+"""
+
+# SECURITY WARNING: keep the secret key used in production secret!
+#SECRET_KEY =
+
+# Debug settings
+DEBUG = False
+
+ADMINS = []
+#SERVER_EMAIL = 
+
+from django.contrib.messages import constants as message_constants
+MESSAGE_LEVEL = message_constants.INFO
+
+# Allowed hosts
+ALLOWED_HOSTS = ['langthil.info']
+
+# Email settings
+#CONTACT_EMAIL =
+#EMAIL_SENDER =
+
+# Database configuration
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': '',
+#        'USER': '',
+#    }
+#}
