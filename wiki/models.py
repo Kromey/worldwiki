@@ -129,3 +129,23 @@ class Article(models.Model):
     def get_admin_url(self):
         return reverse('admin:wiki_article_change', args=(self.pk,))
 
+
+class RedirectPage(models.Model):
+    title = models.CharField('page title', max_length=50)
+    slug = WikiSlugField(blank=True)
+    article = models.ForeignKey(
+            Article,
+            on_delete=models.CASCADE,
+            related_name='redirectpages',
+            related_query_name='redirectpage',
+            )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return '{title} ⇒ {target}'.format(title=self.title, target=self.article.title)
+
