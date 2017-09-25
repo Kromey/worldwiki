@@ -29,6 +29,7 @@ class ArticleListView(ListView):
 class WikiPageView(View):
     article_template = 'wiki/article_detail.html'
     nsfw_template = 'wiki/article_nsfw.html'
+    disambiguation_template = 'wiki/article_disambiguation.html'
     show_nsfw_content = False
 
     def get(self, request, slug):
@@ -68,7 +69,12 @@ class WikiPageView(View):
             return render(request, self.article_template, context={'article':article})
 
     def get_redirect(self, request, slug):
-        rp = RedirectPage.objects.get(slug=slug)
+        try:
+            rp = RedirectPage.objects.get(slug=slug)
 
-        return redirect(rp.article.get_absolute_url())
+            return redirect(rp.article.get_absolute_url())
+        except RedirectPage.MultipleObjectsReturned:
+            articles = Article.objects.filter(redirectpage__slug=slug).order_by('title')
+
+            return render(request, self.disambiguation_template, context={'articles':articles,'slug':slug})
 
