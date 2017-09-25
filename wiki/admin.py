@@ -18,6 +18,14 @@ class TagAdmin(admin.ModelAdmin):
             )
 
 
+class RedirectPageAdmin(admin.ModelAdmin):
+    list_display = (
+            'slug',
+            'article',
+            )
+    ordering = ('slug','article__title')
+
+
 class ArticleAdmin(admin.ModelAdmin):
     fields = (
             'title',
@@ -48,3 +56,5 @@ class ArticleAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Article, ArticleAdmin)
+admin.site.register(models.RedirectPage, RedirectPageAdmin)
+
