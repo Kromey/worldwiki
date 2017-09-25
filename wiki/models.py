@@ -2,6 +2,7 @@ import re
 
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse, NoReverseMatch
@@ -86,10 +87,28 @@ class Article(models.Model):
             self.is_nsfw = False
             self.is_spoiler = False
 
+        self.validate_unique()
+
         if self.is_published and not self.published:
             self.published = timezone.now()
 
         return super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+
+        if not self.slug:
+            self.slug = slugify(self.title)
+
+    def validate_unique(self, exclude=None):
+        super().validate_unique(exclude)
+
+        qs = Article.objects.filter(slug__iexact=self.slug)
+        if self.pk:
+            qs = qs.exclude(pk=self.pk)
+
+        if qs.exists():
+            raise ValidationError({'slug':'Slug must be unique (case-insensitive)'})
 
     def get_absolute_url(self):
         try:
