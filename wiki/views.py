@@ -1,10 +1,10 @@
 from django.http import Http404
-from django.shortcuts import render
+from django.shortcuts import redirect,render
 from django.views import View
 from django.views.generic import DetailView,ListView
 
 
-from .models import Article,Tag
+from .models import Article,Tag,RedirectPage
 
 
 # Create your views here.
@@ -37,7 +37,14 @@ class WikiPageView(View):
         try:
             return self.get_article(request, slug)
         except Article.DoesNotExist:
-            return self.get_article(request, 'special:404')
+            pass
+
+        try:
+            return self.get_redirect(request, slug)
+        except RedirectPage.DoesNotExist:
+            pass
+
+        return self.get_article(request, 'special:404')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):
@@ -59,4 +66,9 @@ class WikiPageView(View):
             return render(request, self.nsfw_template, context={'article':article})
         else:
             return render(request, self.article_template, context={'article':article})
+
+    def get_redirect(self, request, slug):
+        rp = RedirectPage.objects.get(slug=slug)
+
+        return redirect(rp.article.get_absolute_url())
 
