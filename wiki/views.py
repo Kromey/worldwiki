@@ -1,7 +1,9 @@
 from django.http import Http404
-from django.shortcuts import redirect,render
+from django.shortcuts import get_object_or_404,redirect,render
+from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import DetailView,ListView
+from django.views.generic.base import TemplateView
 
 
 from .models import Article,Tag,RedirectPage
@@ -9,14 +11,19 @@ from .models import Article,Tag,RedirectPage
 
 # Create your views here.
 
-class TagView(DetailView):
+class TagView(TemplateView):
     model = Tag
     context_object_name = 'tag'
+    template_name = 'wiki/article_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['articles'] = self.object.articles.order_by('slug')
+        tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+
+        context['articles'] = tag.articles.order_by('slug')
+        context['title'] = 'Articles tagged "{name}"'.format(name=tag.name)
+        context['description'] = tag.html
 
         return context
 
@@ -25,11 +32,18 @@ class ArticleListView(ListView):
     queryset = Article.objects.filter(is_published=True).exclude(slug__startswith='special:').order_by('slug')
     context_object_name = 'articles'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['title'] = 'All Pages on Langthil'
+
+        return context
+
 
 class WikiPageView(View):
     article_template = 'wiki/article_detail.html'
     nsfw_template = 'wiki/article_nsfw.html'
-    disambiguation_template = 'wiki/article_disambiguation.html'
+    disambiguation_template = 'wiki/article_list.html'
     show_nsfw_content = False
 
     def get(self, request, slug):
@@ -81,6 +95,10 @@ class WikiPageView(View):
             if rp.slug != slug:
                 return redirect('wiki', slug=rp.slug)
             else:
-                articles = Article.objects.filter(redirectpage__slug__iexact=slug).order_by('title')
-                return render(request, self.disambiguation_template, context={'articles':articles,'slug':slug})
+                context = {
+                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug).order_by('title'),
+                        'title': '{slug} (Disambiguation)'.format(slug=slug),
+                        'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=slug)),
+                        }
+                return render(request, self.disambiguation_template, context=context)
 

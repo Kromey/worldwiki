@@ -1,11 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}All Articles on Langthil{% endblock %}
-{% block header %}All Articles on Langthil{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block header %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="articles">
+<div class="article-list-description">{{ description }}</div>
+<div class="article-list">
 	<div class="row">
 		{% for article in articles %}
 		<div class="col-lg-4 col-sm-6"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></div>
