@@ -96,7 +96,7 @@ class WikiPageView(View):
                 return redirect('wiki', slug=rp.slug)
             else:
                 context = {
-                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug).order_by('title'),
+                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug).order_by('slug'),
                         'title': '{slug} (Disambiguation)'.format(slug=slug),
                         'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=slug)),
                         }
