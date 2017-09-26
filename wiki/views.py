@@ -61,20 +61,26 @@ class WikiPageView(View):
         else:
             qs = Article.objects.filter(is_published=True)
 
-        article = qs.get(slug=slug)
+        article = qs.get(slug__iexact=slug)
 
-        if article.is_nsfw and not self.show_nsfw_content:
+        if article.slug != slug:
+            return redirect(article.get_absolute_url())
+        elif article.is_nsfw and not self.show_nsfw_content:
             return render(request, self.nsfw_template, context={'article':article})
         else:
             return render(request, self.article_template, context={'article':article})
 
     def get_redirect(self, request, slug):
+        qs = RedirectPage.objects.filter(slug__iexact=slug)
+
         try:
-            rp = RedirectPage.objects.get(slug=slug)
-
-            return redirect(rp.article.get_absolute_url())
+            return redirect(qs.get().article.get_absolute_url())
         except RedirectPage.MultipleObjectsReturned:
-            articles = Article.objects.filter(redirectpage__slug=slug).order_by('title')
+            rp = qs.first()
 
-            return render(request, self.disambiguation_template, context={'articles':articles,'slug':slug})
+            if rp.slug != slug:
+                return redirect('wiki', slug=rp.slug)
+            else:
+                articles = Article.objects.filter(redirectpage__slug__iexact=slug).order_by('title')
+                return render(request, self.disambiguation_template, context={'articles':articles,'slug':slug})
 
