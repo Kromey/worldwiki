@@ -1,4 +1,3 @@
-import html
 import re
 
 
@@ -19,6 +18,14 @@ wikilink_pattern = r'\[\[(?:(?P<namespace>[-\w_]+):)?(?P<link>.+?)(?:\|(?P<label
 wikilink_re = re.compile(wikilink_pattern)
 
 
+class EscapeHtmlExtension(Extension):
+    def extendMarkdown(self, md, md_globals):
+        # Don't process raw HTML; better for our purposes than bleach
+        # https://pythonhosted.org/Markdown/release-2.6.html#safe_mode-deprecated
+        del md.preprocessors['html_block']
+        del md.inlinePatterns['html']
+
+
 class WikiLinksExtension(Extension):
     def extendMarkdown(self, md, md_globals):
         wikilinks = WikiLinks(wikilink_pattern)
@@ -30,8 +37,8 @@ class WikiLinks(Pattern):
         link = m.group('link').strip()
         label = m.group('label') or link
 
-        link = slugify(html.unescape(link.strip()))
-        label = html.unescape(label.strip())
+        link = slugify(link)
+        label = label.strip()
 
         if namespace and namespace.lower() == 'tag':
             href, title, classes = self.build_tag_link(link, label)
@@ -82,7 +89,6 @@ class WikiLinks(Pattern):
         return (href, title, classes)
 
 
-cleaner = bleach.sanitizer.Cleaner()
 converter = markdown.Markdown(
         output_format='html5',
         extensions=[
@@ -91,14 +97,14 @@ converter = markdown.Markdown(
             'markdown.extensions.admonition',
             TocExtension(permalink=True, baselevel=2),
             WikiLinksExtension(),
+            EscapeHtmlExtension(),
             ],
         )
 linker = bleach.linkifier.Linker(callbacks=[])
 
 
 def markdown_to_html(md):
-    clean_md = cleaner.clean(md)
-    html = converter.reset().convert(clean_md)
+    html = converter.reset().convert(md)
     linked = linker.linkify(html)
 
     return linked
