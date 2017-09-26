@@ -129,6 +129,9 @@ class Article(models.Model):
     def get_admin_url(self):
         return reverse('admin:wiki_article_change', args=(self.pk,))
 
+    class Meta:
+        ordering = ('slug',)
+
 
 class RedirectPage(models.Model):
     title = models.CharField('page title', max_length=50)

@@ -21,7 +21,7 @@ class TagView(TemplateView):
 
         tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
 
-        context['articles'] = tag.articles.order_by('slug')
+        context['articles'] = tag.articles.all()
         context['title'] = 'Articles tagged "{name}"'.format(name=tag.name)
         context['description'] = tag.html
 
@@ -29,7 +29,7 @@ class TagView(TemplateView):
 
 
 class ArticleListView(ListView):
-    queryset = Article.objects.filter(is_published=True).exclude(slug__startswith='special:').order_by('slug')
+    queryset = Article.objects.filter(is_published=True).exclude(slug__startswith='special:')
     context_object_name = 'articles'
 
     def get_context_data(self, **kwargs):
@@ -96,7 +96,7 @@ class WikiPageView(View):
                 return redirect('wiki', slug=rp.slug)
             else:
                 context = {
-                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug).order_by('slug'),
+                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug),
                         'title': '{slug} (Disambiguation)'.format(slug=slug),
                         'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=slug)),
                         }
