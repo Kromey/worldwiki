@@ -169,3 +169,18 @@ h6:hover a.headerlink
 .content tr:hover td {
 	background-color: #eee;
 }
+
+.admonition {
+	margin-left: 20px;
+	margin-right: 15px;
+}
+.admonition .admonition-title {
+	font-weight: bold;
+	font-size: 125%;
+}
+
+blockquote {
+	font-family: serif;
+	font-style: italic;
+	font-size: medium;
+}
