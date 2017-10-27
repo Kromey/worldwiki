@@ -6,6 +6,7 @@ from django.views.generic import DetailView,ListView
 from django.views.generic.base import TemplateView
 
 
+from .forms import ArticleForm
 from .models import Article,Tag,RedirectPage
 
 
@@ -77,12 +78,16 @@ class WikiPageView(View):
 
         article = qs.get(slug__iexact=slug)
 
+        context = {'article':article}
+        if self.request.user.has_perm('wiki.change_article'):
+            context['form'] = ArticleForm(instance=article)
+
         if article.slug != slug:
             return redirect(article.get_absolute_url())
         elif article.is_nsfw and not self.show_nsfw_content:
-            return render(request, self.nsfw_template, context={'article':article})
+            return render(request, self.nsfw_template, context=context)
         else:
-            return render(request, self.article_template, context={'article':article})
+            return render(request, self.article_template, context=context)
 
     def get_redirect(self, request, slug):
         qs = RedirectPage.objects.filter(slug__iexact=slug)
