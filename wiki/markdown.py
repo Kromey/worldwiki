@@ -2,6 +2,7 @@ import re
 
 
 import bleach
+from django.db.models import Q
 from django.urls import reverse
 from django.utils import timezone
 import markdown
@@ -74,7 +75,7 @@ class WikiLinks(Pattern):
         from .models import Article
         classes = []
         try:
-            article = Article.objects.filter(is_published=True).get(slug__iexact=slug)
+            article = Article.objects.filter(is_published=True).filter(Q(slug__iexact=slug) | Q(redirectpage__slug__iexact=slug)).get()
             slug = article.slug
             title = '{title} ({date:%b %d, %Y})'.format(
                         title = article.title,
