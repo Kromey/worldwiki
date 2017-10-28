@@ -82,8 +82,7 @@ abbr[title] {
 	margin-top: 0;
 }
 
-.article_source,
-.article_edit {
+.article_source {
 	display: none;
 }
 .article_source div {

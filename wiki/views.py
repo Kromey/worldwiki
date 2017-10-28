@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.http import Http404,HttpResponse
 from django.shortcuts import get_object_or_404,redirect,render
 from django.utils.safestring import mark_safe
 from django.views import View
@@ -7,6 +7,7 @@ from django.views.generic.base import TemplateView
 
 
 from .forms import ArticleForm
+from .markdown import markdown_to_html
 from .models import Article,Tag,RedirectPage
 
 
@@ -106,4 +107,30 @@ class WikiPageView(View):
                         'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=slug)),
                         }
                 return render(request, self.disambiguation_template, context=context)
+
+
+class WikiEditView(View):
+    def get(self, request, slug):
+        return render(request, 'wiki/edit.html', context={'form':self._get_form(slug)})
+
+    def post(self, request, slug):
+        form = self._get_form(slug, request.POST)
+
+        if form.is_valid():
+            article = form.save()
+            return redirect(article.get_absolute_url())
+        else:
+            return render(request, 'wiki/edit.html', context={'form':form})
+
+    def _get_form(self, slug, data=None):
+        try:
+            form = ArticleForm(data, instance=Article.objects.get(slug__iexact=slug))
+        except Article.DoesNotExist:
+            form = ArticleForm(data)
+
+        return form
+
+class PreviewView(View):
+    def post(self, request):
+        return HttpResponse(markdown_to_html(request.POST.get('markdown', '')))
 

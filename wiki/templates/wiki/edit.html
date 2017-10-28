@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Editing: {{ form.instance.title }}{% endblock %}
+{% block header %}Editing: {{ form.instance.title }}{% endblock %}
+
+{% block content %}
+<div class="articles-tags text-right">
+	{% if not form.instance.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
+	{% if form.instance.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
+	{% if form.instance.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
+	{% for tag in form.instance.tags.all %}
+	<a href="{% url 'wiki-tag' slug=tag.slug %}" class="label label-info">{{ tag }}</a>
+	{% endfor %}
+	{% if perms.wiki.change_article %}<button role="button" class="btn btn-xs btn-default" id="edit-page">Edit</a>{% endif %}
+</div>
+<div class="article_edit">
+	<form method="POST" id="article-form">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<div class="text-right">
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</form>
+</div>
+
+<div id="article_edited">
+	Last modified on {{ form.instance.edited }}
+</div>
+{% endblock content %}
+
+{% block styles %}
+<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
+<link href="{% static 'wiki/bootstrap-markdown.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'wiki/wiki.js' %}"></script>
+<script src="{% static 'wiki/jquery.hotkeys.js' %}"></script>
+<script src="{% static 'wiki/bootstrap-markdown.js' %}"></script>
+{% endblock %}
