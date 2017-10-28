@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Editing: {{ form.instance.title }}{% endblock %}
-{% block header %}Editing: {{ form.instance.title }}{% endblock %}
+{% block title %}Editing: {{ article.title }}{% endblock %}
+{% block header %}Editing: {{ article.title }}{% endblock %}
 
 {% block content %}
 <div class="articles-tags text-right">
-	{% if not form.instance.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
-	{% if form.instance.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
-	{% if form.instance.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
-	{% for tag in form.instance.tags.all %}
+	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
+	{% if article.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
+	{% if article.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
+	{% if article.pk %}
+	{% for tag in article.tags.all %}
 	<a href="{% url 'wiki-tag' slug=tag.slug %}" class="label label-info">{{ tag }}</a>
 	{% endfor %}
+	{% endif %}
 	<button role="button" id="go-back" class="btn btn-xs btn-default">Cancel</button>
 </div>
 <div class="article_edit">
@@ -25,7 +27,7 @@
 </div>
 
 <div id="article_edited">
-	Last modified on {{ form.instance.edited }}
+	Last modified on {{ article.edited }}
 </div>
 {% endblock content %}
 

@@ -12,7 +12,13 @@
 	{% for tag in article.tags.all %}
 	<a href="{% url 'wiki-tag' slug=tag.slug %}" class="label label-info">{{ tag }}</a>
 	{% endfor %}
-	{% if perms.wiki.change_article %}<a href="{% url 'wiki-edit' slug=article.slug %}" class="btn btn-xs btn-default" id="edit-page">Edit</a>{% endif %}
+	{% if perms.wiki.change_article %}
+	{% if create_url %}
+	<a href="{{ create_url }}" class="btn btn-xs btn-default" id="new-page">New</a>
+	{% else %}
+	<a href="{% url 'wiki-edit' slug=article.slug %}" class="btn btn-xs btn-default" id="edit-page">Edit</a>
+	{% endif %}
+	{% endif %}
 </div>
 <div class="article_content">
 	<div>

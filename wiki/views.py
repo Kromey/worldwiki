@@ -1,5 +1,6 @@
 from django.http import Http404,HttpResponse
 from django.shortcuts import get_object_or_404,redirect,render
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import DetailView,ListView
@@ -47,6 +48,7 @@ class WikiPageView(View):
     nsfw_template = 'wiki/article_nsfw.html'
     disambiguation_template = 'wiki/article_list.html'
     show_nsfw_content = False
+    create_url = None
 
     def get(self, request, slug):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
@@ -61,6 +63,7 @@ class WikiPageView(View):
         except RedirectPage.DoesNotExist:
             pass
 
+        self.create_url = reverse('wiki-new', kwargs={'slug':slug})
         return self.get_article(request, 'special:404')
 
     def post(self, request, *args, **kwargs):
@@ -79,7 +82,7 @@ class WikiPageView(View):
 
         article = qs.get(slug__iexact=slug)
 
-        context = {'article':article}
+        context = {'article':article,'create_url':self.create_url}
         if self.request.user.has_perm('wiki.change_article'):
             context['form'] = ArticleForm(instance=article)
 
@@ -111,24 +114,31 @@ class WikiPageView(View):
 
 class WikiEditView(View):
     def get(self, request, slug):
-        return render(request, 'wiki/edit.html', context={'form':self._get_form(slug)})
+        article = self._get_article(slug)
+        form = self._get_form(article)
+        return render(request, 'wiki/edit.html', context={'form':form,'article':article})
 
     def post(self, request, slug):
-        form = self._get_form(slug, request.POST)
+        article = self._get_article(slug)
+        form = self._get_form(article, request.POST)
 
         if form.is_valid():
             article = form.save()
             return redirect(article.get_absolute_url())
         else:
-            return render(request, 'wiki/edit.html', context={'form':form})
+            return render(request, 'wiki/edit.html', context={'form':form,'article':article})
 
-    def _get_form(self, slug, data=None):
+    def _get_article(self, slug):
         try:
-            form = ArticleForm(data, instance=Article.objects.get(slug__iexact=slug))
+            return Article.objects.get(slug__iexact=slug)
         except Article.DoesNotExist:
-            form = ArticleForm(data)
+            return Article(slug=slug, title=self._get_title_from_slug(slug))
 
-        return form
+    def _get_title_from_slug(self, slug):
+        return slug.replace('_', ' ').title()
+
+    def _get_form(self, article, data=None):
+        return ArticleForm(data, instance=article)
 
 class PreviewView(View):
     def post(self, request):
