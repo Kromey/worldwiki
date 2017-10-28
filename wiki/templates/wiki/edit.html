@@ -12,7 +12,7 @@
 	{% for tag in form.instance.tags.all %}
 	<a href="{% url 'wiki-tag' slug=tag.slug %}" class="label label-info">{{ tag }}</a>
 	{% endfor %}
-	{% if perms.wiki.change_article %}<button role="button" class="btn btn-xs btn-default" id="edit-page">Edit</a>{% endif %}
+	<button role="button" id="go-back" class="btn btn-xs btn-default">Cancel</button>
 </div>
 <div class="article_edit">
 	<form method="POST" id="article-form">
