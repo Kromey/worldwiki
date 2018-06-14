@@ -84,6 +84,11 @@ class WikiLinks(Pattern):
         except Article.DoesNotExist:
             classes.append('new')
             title = '{label} (page does not exist)'.format(label=label)
+        except Article.MultipleObjectsReturned:
+            from .models import RedirectPage
+            disambig = RedirectPage.objects.filter(slug=slug).first()
+            slug = disambig.slug
+            title = disambig.slug
 
         href = reverse('wiki', args=[slug])
 
