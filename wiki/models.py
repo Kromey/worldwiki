@@ -14,7 +14,7 @@ from .markdown import markdown_to_html
 from .utils import slugify
 
 
-slug_re = re.compile(r'^[-a-zA-Z0-9_:]+$')
+slug_re = re.compile(r'^[-a-zA-Z0-9_:()]+$')
 validate_slug = RegexValidator(slug_re, 'Please enter a valid slug consisting of letters, numbers, underscores, hyphens, or colons', 'invalid')
 
 class WikiSlugFormField(forms.SlugField):
