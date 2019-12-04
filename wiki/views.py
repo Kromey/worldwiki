@@ -75,7 +75,7 @@ class WikiPageView(View):
         return self.get(request, *args, **kwargs)
 
     def get_article(self, request, slug):
-        if self.request.user.has_perm('wiki.change_article'):
+        if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
             qs = Article.objects.filter(is_published=True)
