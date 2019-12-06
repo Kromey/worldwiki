@@ -7,11 +7,15 @@ database settings.
 # SECURITY WARNING: keep the secret key used in production secret!
 #SECRET_KEY =
 
+# Wiki settings
+WIKI = {
+    'title': None,
+}
+
 # Debug settings
 DEBUG = False
 
 ADMINS = []
-#SERVER_EMAIL = 
 
 from django.contrib.messages import constants as message_constants
 MESSAGE_LEVEL = message_constants.INFO

@@ -82,6 +82,10 @@ WSGI_APPLICATION = 'langthil.wsgi.application'
 
 DATABASES = site_settings.DATABASES
 
+# Wiki settings
+
+WIKI = site_settings.WIKI
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

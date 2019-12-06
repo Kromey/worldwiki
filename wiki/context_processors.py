@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 from .models import Article
 
 
@@ -20,10 +23,16 @@ def wiki(request):
 
     content_css = 'content col-md-{}'.format('9' if sidebar.exists else '12')
 
+    try:
+        title = settings.WIKI['title']
+    except (AttributeError,KeyError):
+        title = None
+
     return {
         'wiki': {
             'sidebar': sidebar,
             'css': content_css,
+            'title': title,
         }
     }
 
