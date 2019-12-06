@@ -29,8 +29,8 @@
 
 		<div class="container">
 			<div class="row">
-				<div class="{{ sidebar_class }}">{{ sidebar_content }}</div>
-				<div class="{{ content_class }} clearfix">
+				<div class="{{ wiki.sidebar.css }}">{{ wiki.sidebar.content }}</div>
+				<div class="{{ wiki.css }} clearfix">
 					{% block content %}Hello, world!{% endblock content %}
 				</div>
 			</div>

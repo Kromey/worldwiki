@@ -1,18 +1,29 @@
 from .models import Article
 
 
-def wiki_sidebar(request):
-    try:
-        sidebar = Article.objects.get(slug='special:sidebar')
-        return {
-                'sidebar_content': sidebar.html,
-                'sidebar_class': 'sidebar col-md-3',
-                'content_class': 'content col-md-9',
-                }
-    except Article.DoesNotExist:
-        return {
-                'sidebar_content': 'To display a sidebar, create an article with the slug "sidebar"',
-                'sidebar_class': 'sidebar hidden',
-                'content_class': 'content col-md-12',
-                }
+class WikiSidebar:
+    SLUG = 'special:sidebar'
+    def __init__(self):
+        try:
+            sidebar = Article.objects.get(slug=WikiSidebar.SLUG)
+
+            self.content = sidebar.html
+            self.css = 'sidebar col-md-3'
+            self.exists = True
+        except Article.DoesNotExist:
+            self.content = 'To display a sidebar, create an article with the slug "{slug}"'.format(slug=WikiSidebar.SLUG)
+            self.css = 'sidebar hidden'
+            self.exists = False
+
+def wiki(request):
+    sidebar = WikiSidebar()
+
+    content_css = 'content col-md-{}'.format('9' if sidebar.exists else '12')
+
+    return {
+        'wiki': {
+            'sidebar': sidebar,
+            'css': content_css,
+        }
+    }
 
