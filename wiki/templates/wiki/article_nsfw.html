@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'wiki/_base.html' %}
 
 {% block title %}This Content May Be NSFW{% endblock %}
 {% block header %}This Content May Be NSFW{% endblock %}
@@ -46,11 +45,3 @@
 	</p>
 </div>
 {% endblock content %}
-
-{% block styles %}
-<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
-{% endblock %}
-
-{% block scripts %}
-<script src="{% static 'wiki/wiki.js' %}"></script>
-{% endblock %}

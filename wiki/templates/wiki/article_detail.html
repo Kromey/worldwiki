@@ -1,5 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'wiki/_base.html' %}
 
 {% block title %}{{ article.title }}{% endblock %}
 {% block header %}{{ article.title }}{% endblock %}
@@ -37,10 +36,3 @@
 </div>
 {% endblock content %}
 
-{% block styles %}
-<link href="{% static 'wiki/wiki.css' %}" rel="stylesheet">
-{% endblock %}
-
-{% block scripts %}
-<script src="{% static 'wiki/wiki.js' %}"></script>
-{% endblock %}
