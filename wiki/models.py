@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse, NoReverseMatch
 from django.utils import timezone
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
@@ -120,11 +121,14 @@ class Article(models.Model):
         url = self.get_absolute_url()
 
         if url:
-            return '<a target="_blank" href="{url}">{url}</a>'.format(url=self.get_absolute_url())
+            return format_html(
+                '<a target="_blank" href="{}">{}</a>',
+                self.get_absolute_url(),
+                self.get_absolute_url(),
+            )
         else:
             return self.slug
     view_link.short_description = 'view on site'
-    view_link.allow_tags = True
 
     def get_admin_url(self):
         return reverse('admin:wiki_article_change', args=(self.pk,))
