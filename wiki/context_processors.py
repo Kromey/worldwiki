@@ -5,7 +5,7 @@ from .models import Article
 
 
 class WikiSidebar:
-    SLUG = 'special:sidebar'
+    SLUG = 'sidebar'
     def __init__(self):
         try:
             sidebar = Article.objects.get(slug=WikiSidebar.SLUG)

@@ -64,7 +64,7 @@ class WikiPageView(View):
             pass
 
         self.create_url = reverse('wiki-new', kwargs={'slug':slug})
-        return self.get_article(request, 'special:404')
+        return self.get_article(request, 'Error404')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):

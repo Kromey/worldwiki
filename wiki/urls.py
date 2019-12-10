@@ -13,5 +13,5 @@ urlpatterns = [
     url(r'^(?P<slug>[-\w_()]+)/new$', WikiEditView.as_view(), name='wiki-new'),
 
     url(r'^tag:(?P<slug>[-\w_()]+)$', TagView.as_view(), name='wiki-tag'),
-    url(r'^$', WikiPageView.as_view(), kwargs={'slug':'special:start'}, name='wiki-start'),
+    url(r'^$', WikiPageView.as_view(), kwargs={'slug':'start'}, name='wiki-start'),
 ]
