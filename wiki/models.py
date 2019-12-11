@@ -11,22 +11,9 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
+from .fields import WikiSlugField,WikiNamespaceField
 from .markdown import markdown_to_html
 from .utils import slugify
-
-
-slug_re = re.compile(r'^[-a-zA-Z0-9_:()]+$')
-validate_slug = RegexValidator(slug_re, 'Please enter a valid slug consisting of letters, numbers, underscores, hyphens, or colons', 'invalid')
-
-class WikiSlugFormField(forms.SlugField):
-    default_validators = [validate_slug,]
-
-
-class WikiSlugField(models.SlugField):
-    validators = [validate_slug,]
-
-    def formfield(self, **kwargs):
-        return super().formfield(form_class=WikiSlugFormField, **kwargs)
 
 
 # Create your models here.
@@ -57,6 +44,7 @@ class Tag(models.Model):
 
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
+    namespace = WikiNamespaceField(blank=True, default='')
     slug = WikiSlugField(unique=True, blank=True)
     published = models.DateTimeField(null=True, default=None)
     edited = models.DateTimeField(auto_now=True)

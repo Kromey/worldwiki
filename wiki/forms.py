@@ -7,7 +7,7 @@ from .models import Article
 class ArticleForm(ModelForm):
     class Meta:
         model = Article
-        fields = ('title','slug','markdown','is_published','is_nsfw','is_spoiler')
+        fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
         widgets = {
                 'markdown': Textarea(
                     attrs={
