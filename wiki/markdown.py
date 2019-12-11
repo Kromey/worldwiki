@@ -12,7 +12,7 @@ from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
 
-from .utils import slugify
+from .slug import slugify
 
 
 wikilink_pattern = r'\[\[(?:(?P<namespace>[-\w_]+):)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]'

@@ -11,9 +11,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
-from .slug import WikiSlugField,WikiNamespaceField
+from .slug import WikiSlugField,WikiNamespaceField,slugify
 from .markdown import markdown_to_html
-from .utils import slugify
 
 
 # Create your models here.
