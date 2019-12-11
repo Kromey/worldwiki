@@ -11,7 +11,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
-from .fields import WikiSlugField,WikiNamespaceField
+from .slug import WikiSlugField,WikiNamespaceField
 from .markdown import markdown_to_html
 from .utils import slugify
 
