@@ -12,11 +12,11 @@ from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
 
-from .slug import slugify
+from .slug import slugify_path,WikiUrlConverter
 
 
-wikilink_pattern = r'\[\[(?:(?P<namespace>[-\w_]+):)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]'
-wikilink_re = re.compile(wikilink_pattern)
+wiki_converter = WikiUrlConverter()
+wikilink_pattern = r'\[\[(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]'
 
 
 class EscapeHtmlExtension(Extension):
@@ -34,17 +34,17 @@ class WikiLinksExtension(Extension):
 
 class WikiLinks(Pattern):
     def handleMatch(self, m):
-        namespace = m.group('namespace')
-        link = m.group('link').strip()
-        label = m.group('label') or link
+        raw_link = m.group('link')
 
-        link = slugify(link)
+        wiki = wiki_converter.to_python(slugify_path(raw_link))
+
+        label = m.group('label') or raw_link.split('/').pop()
         label = label.strip()
 
-        if namespace and namespace.lower() == 'tag':
-            href, title, classes = self.build_tag_link(link, label)
+        if wiki.namespace and wiki.namespace.lower() == 'tag':
+            href, title, classes = self.build_tag_link(wiki, label)
         else:
-            href, title, classes = self.build_article_link(link, label)
+            href, title, classes = self.build_article_link(wiki, label)
 
         classes.append('wikilink')
 
@@ -71,26 +71,27 @@ class WikiLinks(Pattern):
 
         return (href, title, classes)
 
-    def build_article_link(self, slug, label):
-        from .models import Article
+    def build_article_link(self, wiki, label):
+        from .models import Article,RedirectPage
         classes = []
-        try:
-            article = Article.objects.filter(is_published=True).filter(Q(slug__iexact=slug) | Q(redirectpage__slug__iexact=slug)).get()
-            slug = article.slug
-            title = '{title} ({date:%b %d, %Y})'.format(
-                        title = article.title,
-                        date = timezone.localtime(article.published),
-                        )
-        except Article.DoesNotExist:
-            classes.append('new')
-            title = '{label} (page does not exist)'.format(label=label)
-        except Article.MultipleObjectsReturned:
-            from .models import RedirectPage
-            disambig = RedirectPage.objects.filter(slug=slug).first()
-            slug = disambig.slug
-            title = disambig.slug
+        href = reverse('wiki', args=[wiki])
 
-        href = reverse('wiki', args=[slug])
+        try:
+            article = Article.objects.published().by_url(wiki).get()
+            href = article.get_absolute_url()
+            title = article.title
+        except Article.DoesNotExist:
+            redirect = RedirectPage.objects.by_url(wiki)
+            try:
+                article = redirect.get().article
+                href = article.get_absolute_url()
+                title = article.title
+            except RedirectPage.MultipleObjectsReturned:
+                disambig = redirect.first()
+                title = disambig.slug
+            except RedirectPage.DoesNotExist:
+                classes.append('new')
+                title = '{label} (page does not exist)'.format(label=label)
 
         return (href, title, classes)
 

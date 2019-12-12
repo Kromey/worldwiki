@@ -103,3 +103,6 @@ def slugify(text):
 
     return text
 
+def slugify_path(path):
+    return '/'.join(map(slugify, path.split('/')))
+
