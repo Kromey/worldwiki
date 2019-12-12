@@ -64,7 +64,7 @@ class WikiPageView(View):
         except RedirectPage.DoesNotExist:
             pass
 
-        self.create_url = reverse('wiki-new', kwargs={'slug':wiki.slug})
+        self.create_url = reverse('wiki-new', kwargs={'wiki':wiki})
         return self.get_article(request, Error404)
 
     def post(self, request, *args, **kwargs):
@@ -114,13 +114,13 @@ class WikiPageView(View):
 
 
 class WikiEditView(View):
-    def get(self, request, slug):
-        article = self._get_article(slug)
+    def get(self, request, wiki):
+        article = self._get_article(wiki)
         form = self._get_form(article)
         return render(request, 'wiki/edit.html', context={'form':form,'article':article})
 
-    def post(self, request, slug):
-        article = self._get_article(slug)
+    def post(self, request, wiki):
+        article = self._get_article(wiki)
         form = self._get_form(article, request.POST)
 
         if form.is_valid():
@@ -129,11 +129,11 @@ class WikiEditView(View):
         else:
             return render(request, 'wiki/edit.html', context={'form':form,'article':article})
 
-    def _get_article(self, slug):
+    def _get_article(self, wiki):
         try:
-            return Article.objects.get(slug__iexact=slug)
+            return Article.objects.by_url(wiki).get()
         except Article.DoesNotExist:
-            return Article(slug=slug, title=self._get_title_from_slug(slug))
+            return Article(slug=wiki.slug, namespace=wiki.namespace, title=self._get_title_from_slug(wiki.slug))
 
     def _get_title_from_slug(self, slug):
         return slug.replace('_', ' ').title()
