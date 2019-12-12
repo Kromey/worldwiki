@@ -126,6 +126,7 @@ class Article(models.Model):
 
 class RedirectPage(models.Model):
     title = models.CharField('page title', max_length=50)
+    namespace = WikiNamespaceField(blank=True, default='')
     slug = WikiSlugField(blank=True)
     article = models.ForeignKey(
             Article,
