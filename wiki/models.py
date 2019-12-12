@@ -115,7 +115,7 @@ class Article(models.Model):
 
     def get_absolute_url(self):
         try:
-            return reverse('wiki', args=[self.slug])
+            return reverse('wiki', args=[self])
         except NoReverseMatch:
             return None
 
