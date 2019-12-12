@@ -10,6 +10,7 @@ from django.views.generic.base import TemplateView
 from .forms import ArticleForm
 from .markdown import markdown_to_html
 from .models import Article,Tag,RedirectPage
+from .pages import Error404
 
 
 # Create your views here.
@@ -50,21 +51,21 @@ class WikiPageView(View):
     show_nsfw_content = False
     create_url = None
 
-    def get(self, request, slug):
+    def get(self, request, wiki):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
 
         try:
-            return self.get_article(request, slug)
+            return self.get_article(request, wiki)
         except Article.DoesNotExist:
             pass
 
         try:
-            return self.get_redirect(request, slug)
+            return self.get_redirect(request, wiki)
         except RedirectPage.DoesNotExist:
             pass
 
-        self.create_url = reverse('wiki-new', kwargs={'slug':slug})
-        return self.get_article(request, 'Error404')
+        self.create_url = reverse('wiki-new', kwargs={'slug':wiki.slug})
+        return self.get_article(request, Error404)
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):
@@ -74,40 +75,40 @@ class WikiPageView(View):
 
         return self.get(request, *args, **kwargs)
 
-    def get_article(self, request, slug):
+    def get_article(self, request, wiki):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
             qs = Article.objects.filter(is_published=True)
 
-        article = qs.get(slug__iexact=slug)
+        article = qs.get(slug__iexact=wiki.slug, namespace__iexact=wiki.namespace)
 
         context = {'article':article,'create_url':self.create_url}
         if self.request.user.has_perm('wiki.change_article'):
             context['form'] = ArticleForm(instance=article)
 
-        if article.slug != slug:
+        if article.slug != wiki.slug or article.namespace != wiki.namespace:
             return redirect(article.get_absolute_url())
         elif article.is_nsfw and not self.show_nsfw_content:
             return render(request, self.nsfw_template, context=context)
         else:
             return render(request, self.article_template, context=context)
 
-    def get_redirect(self, request, slug):
-        qs = RedirectPage.objects.filter(slug__iexact=slug)
+    def get_redirect(self, request, wiki):
+        qs = RedirectPage.objects.filter(slug__iexact=wiki.slug, namespace__iexact=wiki.namespace)
 
         try:
             return redirect(qs.get().article.get_absolute_url())
         except RedirectPage.MultipleObjectsReturned:
             rp = qs.first()
 
-            if rp.slug != slug:
-                return redirect('wiki', slug=rp.slug)
+            if rp.slug != wiki.slug or rp.namespace != wiki.namespace:
+                return redirect('wiki', wiki=rp)
             else:
                 context = {
-                        'articles': Article.objects.filter(redirectpage__slug__iexact=slug),
+                        'articles': Article.objects.filter(redirectpage__slug__iexact=wiki.slug),
                         'title': '{slug} (Disambiguation)'.format(slug=slug),
-                        'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=slug)),
+                        'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=wiki.slug)),
                         }
                 return render(request, self.disambiguation_template, context=context)
 
