@@ -71,9 +71,12 @@ class WikiUrlConverter:
 
         try:
             slug = value.slug
-            namespace = value.get('namespace', '')
-        except KeyError:
+        except AttributeError:
             slug = value[0]
+
+        try:
+            namespace = value.namespace
+        except AttributeError:
             try:
                 namespace = value[1]
             except IndexError:
