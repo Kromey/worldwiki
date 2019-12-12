@@ -18,10 +18,23 @@ from .markdown import markdown_to_html
 # Create your models here.
 
 
+class WikiQuerySet(models.QuerySet):
+    def by_slug(self, slug):
+        return self.filter(slug__iexact=slug)
+
+    def by_url(self, url):
+        return self.by_slug(url.slug).filter(namespace__iexact=url.namespace)
+
+    def published(self):
+        return self.filter(is_published=True)
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=50)
     slug = WikiSlugField(unique=True, blank=True)
     description = models.TextField('tag description', help_text='Formatted using Markdown', blank=True)
+
+    objects = WikiQuerySet.as_manager()
 
     @property
     def html(self):
@@ -57,6 +70,8 @@ class Article(models.Model):
             blank=True,
             )
     markdown = models.TextField('article content', help_text='Formatted using Markdown')
+
+    objects = WikiQuerySet.as_manager()
 
     @property
     def html(self):
@@ -134,6 +149,8 @@ class RedirectPage(models.Model):
             related_name='redirectpages',
             related_query_name='redirectpage',
             )
+
+    objects = WikiQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
         if not self.slug:

@@ -79,9 +79,9 @@ class WikiPageView(View):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
-            qs = Article.objects.filter(is_published=True)
+            qs = Article.objects.published
 
-        article = qs.get(slug__iexact=wiki.slug, namespace__iexact=wiki.namespace)
+        article = qs.by_url(wiki).get()
 
         context = {'article':article,'create_url':self.create_url}
         if self.request.user.has_perm('wiki.change_article'):
@@ -95,7 +95,7 @@ class WikiPageView(View):
             return render(request, self.article_template, context=context)
 
     def get_redirect(self, request, wiki):
-        qs = RedirectPage.objects.filter(slug__iexact=wiki.slug, namespace__iexact=wiki.namespace)
+        qs = RedirectPage.objects.by_url(wiki)
 
         try:
             return redirect(qs.get().article.get_absolute_url())
