@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 import markdown
 from markdown.extensions import Extension
-from markdown.inlinepatterns import Pattern
+from markdown.preprocessors import Preprocessor
 from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
@@ -16,7 +16,7 @@ from .slug import slugify_path,WikiUrlConverter
 
 
 wiki_converter = WikiUrlConverter()
-wikilink_pattern = r'\[\[(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]'
+wikilink_re = re.compile(r'\[\[(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
 
 
 class EscapeHtmlExtension(Extension):
@@ -29,10 +29,63 @@ class EscapeHtmlExtension(Extension):
 
 class WikiLinksExtension(Extension):
     def extendMarkdown(self, md, md_globals):
-        wikilinks = WikiLinks(wikilink_pattern)
-        md.inlinePatterns.add('wikilinks', wikilinks, '>link')
+        md.preprocessors.register(WikiLinksPreprocessor(md), 'wikilinks', 50)
 
-class WikiLinks(Pattern):
+class WikiLinksPreprocessor(Preprocessor):
+    def run(self, lines):
+        return [self.processLine(line) for line in lines]
+
+    def processLine(self, line):
+        m = wikilink_re.search(line)
+
+        if m is None:
+            return line
+
+        raw_link = m.group('link')
+
+        wikiurl = wiki_converter.to_python(slugify_path(raw_link))
+
+        label = m.group('label') or raw_link.split('/').pop()
+        label = label.strip()
+
+        (href, title, classes) = self.find_linked_article(wikiurl, label)
+
+        line = line.replace(
+            m[0],
+            '[{label}]({href}){{: {classes} }}'.format(
+                label=label,
+                href=href,
+                classes=classes,
+            ),
+        )
+
+        # Need to go again in case there's other links
+        return self.processLine(line)
+
+    def find_linked_article(self, wiki, label):
+        from .models import Article,RedirectPage
+        classes = ['.wikilink']
+        href = reverse('wiki', args=[wiki])
+
+        try:
+            article = Article.objects.published().by_url(wiki).get()
+            href = article.get_absolute_url()
+            title = article.title
+        except Article.DoesNotExist:
+            redirect = RedirectPage.objects.by_url(wiki)
+            try:
+                article = redirect.get().article
+                href = article.get_absolute_url()
+                title = article.title
+            except RedirectPage.MultipleObjectsReturned:
+                disambig = redirect.first()
+                title = disambig.slug
+            except RedirectPage.DoesNotExist:
+                classes.append('.new')
+                title = '{label} (page does not exist)'.format(label=label)
+
+        return href, title.replace('"', '&quot;'), ' '.join(classes)
+
     def handleMatch(self, m):
         raw_link = m.group('link')
 
@@ -110,7 +163,7 @@ converter = markdown.Markdown(
 linker = bleach.linkifier.Linker(callbacks=[])
 
 
-def markdown_to_html(md):
+def markdown_to_html(md, base_url=None):
     html = converter.reset().convert(md)
     linked = linker.linkify(html)
 

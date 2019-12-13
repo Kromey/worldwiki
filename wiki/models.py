@@ -75,7 +75,7 @@ class Article(models.Model):
 
     @property
     def html(self):
-        html = markdown_to_html(self.markdown)
+        html = markdown_to_html(self.markdown, base_url=self.get_absolute_url())
         return mark_safe(html)
 
     def __str__(self):
