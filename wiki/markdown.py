@@ -29,10 +29,15 @@ class EscapeHtmlExtension(Extension):
 
 class WikiLinksExtension(Extension):
     def extendMarkdown(self, md, md_globals):
-        md.preprocessors.register(WikiLinksPreprocessor(md), 'wikilinks', 50)
+        self.md = md
+        wikilinks = WikiLinksPreprocessor(md)
+        wikilinks.md = md
+        md.preprocessors.register(wikilinks, 'wikilinks', 25)
 
 class WikiLinksPreprocessor(Preprocessor):
     def run(self, lines):
+        self.base_url = self.md.Meta.get('baseurl', [''])[0].strip()
+
         return [self.processLine(line) for line in lines]
 
     def processLine(self, line):
@@ -41,7 +46,7 @@ class WikiLinksPreprocessor(Preprocessor):
         if m is None:
             return line
 
-        raw_link = m.group('link')
+        raw_link = self.rebase_link(m.group('link'))
 
         wikiurl = wiki_converter.to_python(slugify_path(raw_link))
 
@@ -61,6 +66,30 @@ class WikiLinksPreprocessor(Preprocessor):
 
         # Need to go again in case there's other links
         return self.processLine(line)
+
+    def rebase_link(self, link):
+        # Link is an absolute path
+        if link.startswith('/'):
+            return link.lstrip('/')
+
+        base = self.base_url
+
+        # If the link starts with './', it's relative to this page
+        if link.startswith('./'):
+            return base + link.lstrip('.')
+
+        # Doesn't start with './', so it's relative to the current namespace
+        base = self.namespace(base)
+
+        # '../' is a reference to the parent namespace
+        while link.startswith('../'):
+            link = link[3:]
+            base = self.namespace(base)
+
+        return '/'.join([base, link]).lstrip('/')
+
+    def namespace(self, link):
+        return '/'.join(link.split('/')[:-1])
 
     def find_linked_article(self, wiki, label):
         from .models import Article,RedirectPage
@@ -155,6 +184,7 @@ converter = markdown.Markdown(
             'markdown.extensions.extra',
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
+            'markdown.extensions.meta',
             TocExtension(permalink=True, baselevel=2),
             WikiLinksExtension(),
             EscapeHtmlExtension(),
@@ -163,7 +193,7 @@ converter = markdown.Markdown(
 linker = bleach.linkifier.Linker(callbacks=[])
 
 
-def markdown_to_html(md, base_url=None):
+def markdown_to_html(md):
     html = converter.reset().convert(md)
     linked = linker.linkify(html)
 
