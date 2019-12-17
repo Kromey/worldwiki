@@ -79,7 +79,7 @@ class WikiPageView(View):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
-            qs = Article.objects.published
+            qs = Article.objects.published()
 
         article = qs.by_url(wiki).get()
 
