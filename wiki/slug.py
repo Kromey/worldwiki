@@ -56,7 +56,7 @@ class WikiUrlConverter:
     )
 
     def to_python(self, value):
-        value = value.rsplit('/', 1)
+        value = value.lstrip('/').rsplit('/', 1)
         slug = value.pop()
         try:
             namespace = value.pop()
