@@ -170,25 +170,3 @@ BaseURL: {base_url}
         ordering = ('slug',)
 
 
-class RedirectPage(models.Model):
-    title = models.CharField('page title', max_length=50)
-    namespace = WikiNamespaceField(blank=True, default='')
-    slug = WikiSlugField(blank=True)
-    article = models.ForeignKey(
-            Article,
-            on_delete=models.CASCADE,
-            related_name='redirectpages',
-            related_query_name='redirectpage',
-            )
-
-    objects = WikiQuerySet.as_manager()
-
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
-
-        return super().save(*args, **kwargs)
-
-    def __str__(self):
-        return '{title} ⇒ {target}'.format(title=self.title, target=self.article.title)
-

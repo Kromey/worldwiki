@@ -92,7 +92,7 @@ class WikiLinksPreprocessor(Preprocessor):
         return '/'.join(link.split('/')[:-1])
 
     def find_linked_article(self, wiki, label):
-        from .models import Article,RedirectPage
+        from .models import Article
         classes = ['.wikilink']
         href = reverse('wiki', args=[wiki])
 
@@ -101,17 +101,8 @@ class WikiLinksPreprocessor(Preprocessor):
             href = article.get_absolute_url()
             title = article.title
         except Article.DoesNotExist:
-            redirect = RedirectPage.objects.by_url(wiki)
-            try:
-                article = redirect.get().article
-                href = article.get_absolute_url()
-                title = article.title
-            except RedirectPage.MultipleObjectsReturned:
-                disambig = redirect.first()
-                title = disambig.slug
-            except RedirectPage.DoesNotExist:
-                classes.append('.new')
-                title = '{label} (page does not exist)'.format(label=label)
+            classes.append('.new')
+            title = '{label} (page does not exist)'.format(label=label)
 
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 

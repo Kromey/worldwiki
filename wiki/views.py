@@ -9,7 +9,7 @@ from django.views.generic.base import TemplateView
 
 from .forms import ArticleForm
 from .markdown import markdown_to_html
-from .models import Article,Tag,RedirectPage
+from .models import Article,Tag
 from .pages import Error404
 
 
@@ -59,11 +59,6 @@ class WikiPageView(View):
         except Article.DoesNotExist:
             pass
 
-        try:
-            return self.get_redirect(request, wiki)
-        except RedirectPage.DoesNotExist:
-            pass
-
         self.create_url = reverse('wiki-new', kwargs={'wiki':wiki})
         return self.get_article(request, Error404)
 
@@ -95,24 +90,6 @@ class WikiPageView(View):
             return render(request, self.nsfw_template, context=context)
         else:
             return render(request, self.article_template, context=context)
-
-    def get_redirect(self, request, wiki):
-        qs = RedirectPage.objects.by_url(wiki)
-
-        try:
-            return redirect(qs.get().article.get_absolute_url())
-        except RedirectPage.MultipleObjectsReturned:
-            rp = qs.first()
-
-            if rp.slug != wiki.slug or rp.namespace != wiki.namespace:
-                return redirect('wiki', wiki=rp)
-            else:
-                context = {
-                        'articles': Article.objects.filter(redirectpage__slug__iexact=wiki.slug),
-                        'title': '{slug} (Disambiguation)'.format(slug=slug),
-                        'description': mark_safe('<p><strong>{slug}</strong> may refer to:</p>'.format(slug=wiki.slug)),
-                        }
-                return render(request, self.disambiguation_template, context=context)
 
 
 class WikiEditView(View):
