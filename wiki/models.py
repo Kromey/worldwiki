@@ -11,7 +11,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
-from .slug import WikiSlugField,WikiNamespaceField,slugify
+from .slug import WikiSlugField,WikiNamespaceField,slugify,WikiUrlConverter
 from .markdown import markdown_to_html
 
 
@@ -89,6 +89,25 @@ BaseURL: {base_url}
 
         html = markdown_to_html(md)
         return mark_safe(html)
+
+    REDIRECT_RE = re.compile(r'^\[\[REDIRECT:(?P<redirect>.*?)\]\]', re.I)
+    @property
+    def is_redirect(self):
+        return self.REDIRECT_RE.match(self.markdown.strip()) is not None
+
+    def get_redirect_url(self):
+        m = self.REDIRECT_RE.match(self.markdown.strip())
+
+        if m is None:
+            return None
+
+        url = m.group('redirect')
+
+        try:
+            a = Article.objects.by_url(WikiUrlConverter().to_python(url)).get()
+            return a.get_absolute_url()
+        except Article.DoesNotExist:
+            return url
 
     def __str__(self):
         return self.title
