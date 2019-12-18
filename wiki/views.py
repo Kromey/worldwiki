@@ -82,7 +82,7 @@ class WikiPageView(View):
         if self.request.user.has_perm('wiki.change_article'):
             context['form'] = ArticleForm(instance=article)
 
-        if article.is_redirect:
+        if article.is_redirect and self.request.GET.get('redirect') != 'no':
             return redirect(article.get_redirect_url())
         elif article.slug != wiki.slug or article.namespace != wiki.namespace:
             return redirect(article.get_absolute_url())

@@ -1,4 +1,5 @@
 import re
+from urllib.parse import parse_qsl,urlencode,urlsplit,urlunsplit
 
 
 from django import forms
@@ -91,11 +92,12 @@ BaseURL: {base_url}
         return mark_safe(html)
 
     REDIRECT_RE = re.compile(r'^\[\[REDIRECT:(?P<redirect>.*?)\]\]', re.I)
+
     @property
     def is_redirect(self):
         return self.REDIRECT_RE.match(self.markdown.strip()) is not None
 
-    def get_redirect_url(self):
+    def get_redirect_url(self, sticky_redirect=True):
         m = self.REDIRECT_RE.match(self.markdown.strip())
 
         if m is None:
@@ -105,9 +107,23 @@ BaseURL: {base_url}
 
         try:
             a = Article.objects.by_url(WikiUrlConverter().to_python(url)).get()
-            return a.get_absolute_url()
+
+            if sticky_redirect and a.is_redirect:
+                return self._sticky_url(a.get_absolute_url())
+            else:
+                return a.get_absolute_url()
         except Article.DoesNotExist:
             return url
+
+    def _sticky_url(self, url):
+        url = urlsplit(url)
+
+        query = parse_qsl(url.query)
+        query.append(('redirect','no'))
+
+        url = url._replace(query=urlencode(query))
+
+        return urlunsplit(url)
 
     def __str__(self):
         return self.title
