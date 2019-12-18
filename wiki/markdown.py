@@ -57,10 +57,11 @@ class WikiLinksPreprocessor(Preprocessor):
 
         line = line.replace(
             m[0],
-            '[{label}]({href}){{: {classes} }}'.format(
+            '[{label}]({href}){{: {classes} title="{title}" }}'.format(
                 label=label,
                 href=href,
                 classes=classes,
+                title=title,
             ),
         )
 
