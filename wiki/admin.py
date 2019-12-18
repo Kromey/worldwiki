@@ -21,7 +21,10 @@ class TagAdmin(admin.ModelAdmin):
 class ArticleAdmin(admin.ModelAdmin):
     fields = (
             'title',
-            'slug',
+            (
+                'namespace',
+                'slug',
+            ),
             (
                 'published',
                 'edited',
@@ -39,12 +42,18 @@ class ArticleAdmin(admin.ModelAdmin):
             'view_link',
             'published',
             'edited',
+            'is_redirect',
             'is_published',
             'is_nsfw',
             'is_spoiler',
             )
     readonly_fields = ('published','edited')
     filter_horizontal = ('tags',)
+
+    def is_redirect(self, obj):
+        return obj.is_redirect
+    is_redirect.short_description = 'redirect?'
+    is_redirect.boolean = True
 
 admin.site.register(models.Tag, TagAdmin)
 admin.site.register(models.Article, ArticleAdmin)
