@@ -6,6 +6,7 @@
 {% block content %}
 <div class="articles-tags text-right">
 	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
+	{% if article.is_redirect %}<span class="label label-warning">Redirect Page</span>{% endif %}
 	{% if article.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
 	{% if article.is_spoiler %}<span class="label label-warning">Spoiler</span>{% endif %}
 	{% for tag in article.tags.all %}

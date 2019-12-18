@@ -16,7 +16,7 @@ from .slug import slugify_path,WikiUrlConverter
 
 
 wiki_converter = WikiUrlConverter()
-wikilink_re = re.compile(r'\[\[(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
+wikilink_re = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
 
 
 class EscapeHtmlExtension(Extension):
@@ -54,6 +54,9 @@ class WikiLinksPreprocessor(Preprocessor):
         label = label.strip()
 
         (href, title, classes) = self.find_linked_article(wikiurl, label)
+
+        if m.group('type'):
+            classes += ' .' + m.group('type').rstrip(':').lower()
 
         line = line.replace(
             m[0],

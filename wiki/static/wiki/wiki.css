@@ -121,6 +121,13 @@ a.wikilink.new:hover {
 	text-decoration: none;
 	color: #d81515;
 }
+a.wikilink.redirect::before {
+	content: '\21B3';
+	color: black;
+	text-decoration: none;
+	display: inline-block;
+	margin-right: 3px;
+}
 .sidebar a.wikilink.new {
 	border: none;
 }
