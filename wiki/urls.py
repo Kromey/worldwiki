@@ -1,4 +1,3 @@
-from django.conf.urls import url
 from django.urls import path,register_converter
 
 
@@ -33,16 +32,13 @@ register_converter(WikiSlugConverter, 'wikislug')
 
 
 urlpatterns = [
-    url(r'^special:index$', ArticleListView.as_view(), name='wiki-index'),
-    url(r'^special:preview$', PreviewView.as_view(), name='wiki-preview'),
+    path('special:index', ArticleListView.as_view(), name='wiki-index'),
+    path('special:preview', PreviewView.as_view(), name='wiki-preview'),
 
-    #path('<wiki:wiki>/edit', WikiUpdateView.as_view(), name='wiki-edit'),
-    #path('<wiki:wiki>/new', WikiCreateView.as_view(), name='wiki-new'),
-    #path('<wiki:wiki>', WikiPageView.as_view(), name='wiki'),
     path('<namespace:namespace><wikislug:slug>/new', WikiCreateView.as_view(), name='wiki-new'),
     path('<namespace:namespace><wikislug:slug>/edit', WikiUpdateView.as_view(), name='wiki-edit'),
     path('<namespace:namespace><wikislug:slug>', WikiPageView.as_view(), name='wiki'),
 
-    url(r'^tag:(?P<slug>[-\w_()]+)$', TagView.as_view(), name='wiki-tag'),
+    path('tag:<wikislug:slug>', TagView.as_view(), name='wiki-tag'),
     path('', WikiPageView.as_view(), kwargs=WikiStart, name='wiki-start'),
 ]
