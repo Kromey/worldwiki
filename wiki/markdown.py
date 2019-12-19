@@ -97,7 +97,6 @@ class WikiLinksPreprocessor(Preprocessor):
     def find_linked_article(self, wiki, label):
         from .models import Article
         classes = ['.wikilink']
-        href = reverse('wiki', args=[wiki])
 
         try:
             article = Article.objects.published().by_url(wiki).get()
@@ -105,6 +104,10 @@ class WikiLinksPreprocessor(Preprocessor):
             title = article.title
         except Article.DoesNotExist:
             classes.append('.new')
+            if wiki.namespace:
+                href = reverse('wiki', kwargs={'namespace':wiki.namespace, 'slug':wiki.slug})
+            else:
+                href = reverse('wiki', args=[wiki.namespace, wiki.slug])
             title = '{label} (page does not exist)'.format(label=label)
 
         return href, title.replace('"', '&quot;'), ' '.join(classes)

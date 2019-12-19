@@ -52,16 +52,16 @@ class WikiPageView(View):
     show_nsfw_content = False
     create_url = None
 
-    def get(self, request, wiki):
+    def get(self, request, slug, namespace):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
 
         try:
-            return self.get_article(request, wiki)
+            return self.get_article(request, slug, namespace)
         except Article.DoesNotExist:
             pass
 
-        self.create_url = reverse('wiki-new', kwargs={'wiki':wiki})
-        return self.get_article(request, Error404)
+        #self.create_url = reverse('wiki-new', kwargs={'wiki':wiki})
+        return self.get_article(request, 'error404', '')
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):
@@ -71,13 +71,13 @@ class WikiPageView(View):
 
         return self.get(request, *args, **kwargs)
 
-    def get_article(self, request, wiki):
+    def get_article(self, request, slug, namespace):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
             qs = Article.objects.published()
 
-        article = qs.by_url(wiki).get()
+        article = qs.by_namespace(namespace).by_slug(slug).get()
 
         context = {'article':article,'create_url':self.create_url}
         if self.request.user.has_perm('wiki.change_article'):
@@ -85,7 +85,7 @@ class WikiPageView(View):
 
         if article.is_redirect and self.request.GET.get('redirect') != 'no':
             return redirect(article.get_redirect_url())
-        elif article.slug != wiki.slug or article.namespace != wiki.namespace:
+        elif article.slug != slug or article.namespace != namespace:
             return redirect(article.get_absolute_url())
         elif article.is_nsfw and not self.show_nsfw_content:
             return render(request, self.nsfw_template, context=context)
@@ -96,8 +96,14 @@ class WikiPageView(View):
 class WikiUpdateView(UpdateView):
     model = Article
     fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
-    slug_url_kwarg = 'wiki'
-    slug_field = 'wikipath'
+
+    def get_object(self, queryset=None):
+        queryset = queryset or self.get_queryset()
+
+        queryset = queryset.by_namespace(self.kwargs['namespace'])
+        queryset = queryset.by_slug(self.kwargs['slug'])
+
+        return queryset.get()
 
 class WikiCreateView(CreateView):
     model = Article

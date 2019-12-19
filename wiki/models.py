@@ -33,6 +33,9 @@ class WikiQuerySet(models.QuerySet):
     def by_slug(self, slug):
         return self.filter(slug__iexact=slug)
 
+    def by_namespace(self, namespace):
+        return self.filter(namespace__iexact=namespace)
+
     def by_url(self, url):
         return self.by_slug(url.slug).filter(namespace__iexact=url.namespace)
 
@@ -172,7 +175,7 @@ BaseURL: {base_url}
 
     def get_absolute_url(self):
         try:
-            return reverse('wiki', args=[WikiPath(self.slug, self.namespace)])
+            return reverse('wiki', args=[self.namespace, self.slug])
         except NoReverseMatch:
             return None
 
