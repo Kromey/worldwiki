@@ -55,13 +55,7 @@ class WikiPageView(View):
     def get(self, request, slug, namespace):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
 
-        try:
-            return self.get_article(request, slug, namespace)
-        except Article.DoesNotExist:
-            pass
-
-        #self.create_url = reverse('wiki-new', kwargs={'wiki':wiki})
-        return self.get_article(request, 'error404', '')
+        return self.get_article(request, slug, namespace)
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):
@@ -77,9 +71,12 @@ class WikiPageView(View):
         else:
             qs = Article.objects.published()
 
-        article = qs.by_namespace(namespace).by_slug(slug).get()
+        try:
+            article = qs.by_namespace(namespace).by_slug(slug).get()
+        except Article.DoesNotExist:
+            return self.get_404(request, slug, namespace)
 
-        context = {'article':article,'create_url':self.create_url}
+        context = {'article':article}
         if self.request.user.has_perm('wiki.change_article'):
             context['form'] = ArticleForm(instance=article)
 
@@ -91,6 +88,14 @@ class WikiPageView(View):
             return render(request, self.nsfw_template, context=context)
         else:
             return render(request, self.article_template, context=context)
+
+    def get_404(self, request, slug, namespace):
+        context = {
+            'article': Article.objects.get(**Error404),
+            'create_url': reverse('wiki-new', args=[namespace, slug]),
+        }
+
+        return render(request, self.article_template, context=context)
 
 
 class WikiUpdateView(UpdateView):
