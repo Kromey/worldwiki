@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 
 
 from wiki.path import WikiPath
-from .slug import WikiSlugField,WikiNamespaceField
+from wiki.fields import WikiSlugField,WikiNamespaceField
 from .markdown import markdown_to_html
 
 
