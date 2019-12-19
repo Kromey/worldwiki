@@ -8,10 +8,10 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView,UpdateView
 
 
-from .forms import ArticleForm
-from .markdown import markdown_to_html
-from .models import Article,Tag
-from .pages import Error404
+from wiki import utils
+from wiki.markdown import markdown_to_html
+from wiki.models import Article,Tag
+from wiki.pages import Error404
 
 
 # Create your views here.
@@ -77,8 +77,6 @@ class WikiPageView(View):
             return self.get_404(request, slug, namespace)
 
         context = {'article':article}
-        if self.request.user.has_perm('wiki.change_article'):
-            context['form'] = ArticleForm(instance=article)
 
         if article.is_redirect and self.request.GET.get('redirect') != 'no':
             return redirect(article.get_redirect_url())
@@ -111,33 +109,16 @@ class WikiCreateView(CreateView):
     model = Article
     fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
 
-class WikiEditView(View):
-    def get(self, request, wiki):
-        article = self._get_article(wiki)
-        form = self._get_form(article)
-        return render(request, 'wiki/edit.html', context={'form':form,'article':article})
+    def get_initial(self):
+        title = self.kwargs['slug'].replace('_', ' ').title()
+        slug = utils.slugify(title)
 
-    def post(self, request, wiki):
-        article = self._get_article(wiki)
-        form = self._get_form(article, request.POST)
-
-        if form.is_valid():
-            article = form.save()
-            return redirect(article.get_absolute_url())
-        else:
-            return render(request, 'wiki/edit.html', context={'form':form,'article':article})
-
-    def _get_article(self, wiki):
-        try:
-            return Article.objects.by_url(wiki).get()
-        except Article.DoesNotExist:
-            return Article(slug=wiki.slug, namespace=wiki.namespace, title=self._get_title_from_slug(wiki.slug))
-
-    def _get_title_from_slug(self, slug):
-        return slug.replace('_', ' ').title()
-
-    def _get_form(self, article, data=None):
-        return ArticleForm(data, instance=article)
+        return {
+            'title': title,
+            'slug': slug,
+            'namespace': self.kwargs['namespace'],
+            'is_published': True,
+        }
 
 class PreviewView(View):
     def post(self, request):
