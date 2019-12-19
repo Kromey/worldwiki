@@ -16,7 +16,7 @@
 	{% if create_url %}
 	<a href="{{ create_url }}" class="btn btn-xs btn-default" id="new-page">New</a>
 	{% else %}
-	<a href="{% url 'wiki-edit' namespace=article.namespace slug=article.slug %}" class="btn btn-xs btn-default" id="edit-page">Edit</a>
+	<a href="{{ article.get_edit_url }}" class="btn btn-xs btn-default" id="edit-page">Edit</a>
 	{% endif %}
 	{% endif %}
 </div>

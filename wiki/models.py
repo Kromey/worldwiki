@@ -178,6 +178,12 @@ BaseURL: {base_url}
         except NoReverseMatch:
             return None
 
+    def get_edit_url(self):
+        try:
+            return reverse('wiki-edit', args=[self.namespace, self.slug])
+        except NoReverseMatch:
+            return None
+
     def get_admin_url(self):
         return reverse('admin:wiki_article_change', args=(self.pk,))
 
