@@ -165,12 +165,12 @@ BaseURL: {base_url}
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
 
-        qs = Article.objects.filter(slug__iexact=self.slug)
+        qs = Article.objects.filter(slug=self.slug, namespace=self.namespace)
         if self.pk:
             qs = qs.exclude(pk=self.pk)
 
         if qs.exists():
-            raise ValidationError({'slug':'Slug must be unique (case-insensitive)'})
+            raise ValidationError({'slug':'Namespace+slug must be unique (case-insensitive)'})
 
     def get_absolute_url(self):
         try:
