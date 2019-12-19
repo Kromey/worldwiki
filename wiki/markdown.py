@@ -112,29 +112,6 @@ class WikiLinksPreprocessor(Preprocessor):
 
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 
-    def handleMatch(self, m):
-        raw_link = m.group('link')
-
-        wiki = WikiPath.from_title(raw_link)
-
-        label = m.group('label') or raw_link.split('/').pop()
-        label = label.strip()
-
-        if wiki.namespace and wiki.namespace.lower() == 'tag':
-            href, title, classes = self.build_tag_link(wiki, label)
-        else:
-            href, title, classes = self.build_article_link(wiki, label)
-
-        classes.append('wikilink')
-
-        a = etree.Element('a')
-        a.text = label
-        a.set('href', href)
-        a.set('class', ' '.join(classes))
-        a.set('title', title)
-
-        return a
-
     def build_tag_link(self, slug, label):
         from .models import Tag
         classes = ['wikitag']
@@ -147,30 +124,6 @@ class WikiLinksPreprocessor(Preprocessor):
             title = 'No tag "{label}"'.format(label=label)
 
         href = reverse('wiki-tag', args=[slug])
-
-        return (href, title, classes)
-
-    def build_article_link(self, wiki, label):
-        from .models import Article,RedirectPage
-        classes = []
-        href = reverse('wiki', args=[wiki])
-
-        try:
-            article = Article.objects.published().by_url(wiki).get()
-            href = article.get_absolute_url()
-            title = article.title
-        except Article.DoesNotExist:
-            redirect = RedirectPage.objects.by_url(wiki)
-            try:
-                article = redirect.get().article
-                href = article.get_absolute_url()
-                title = article.title
-            except RedirectPage.MultipleObjectsReturned:
-                disambig = redirect.first()
-                title = disambig.slug
-            except RedirectPage.DoesNotExist:
-                classes.append('new')
-                title = '{label} (page does not exist)'.format(label=label)
 
         return (href, title, classes)
 
