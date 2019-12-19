@@ -5,9 +5,13 @@ from wiki.models import Article
 
 
 class SpecialPage(Mapping):
+    pages = []
+
     def __init__(self, slug, namespace=''):
         self.__namespace = namespace
         self.__slug = slug
+
+        SpecialPage.pages.append(self)
 
     @property
     def namespace(self):
