@@ -28,11 +28,17 @@ class SpecialPage(Mapping):
         return getattr(self, key)
 
     def __iter__(self):
-        yield 'slug'
         yield 'namespace'
+        yield 'slug'
 
     def __len__(self):
         return 2
+
+    def __str__(self):
+        return '/'.join(self.values()).strip('/')
+
+    def __repr__(self):
+        return "SpecialPage('{slug}', '{namespace}')".format(**self)
 
 
 Error404 = SpecialPage('Error404')
