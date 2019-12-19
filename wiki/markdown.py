@@ -12,7 +12,7 @@ from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
 
-from wiki.path import WikiPath
+from wiki import utils
 
 
 wikilink_re = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
@@ -47,12 +47,12 @@ class WikiLinksPreprocessor(Preprocessor):
 
         raw_link = self.rebase_link(m.group('link'))
 
-        wikiurl = WikiPath.from_title(raw_link)
+        namespace, page = utils.split_path(raw_link)
 
-        label = m.group('label') or raw_link.split('/').pop()
+        label = m.group('label') or page
         label = label.strip()
 
-        (href, title, classes) = self.find_linked_article(wikiurl, label)
+        (href, title, classes) = self.find_linked_article(namespace, page)
 
         if m.group('type'):
             classes += ' .' + m.group('type').rstrip(':').lower()
@@ -94,21 +94,21 @@ class WikiLinksPreprocessor(Preprocessor):
     def namespace(self, link):
         return '/'.join(link.split('/')[:-1])
 
-    def find_linked_article(self, wiki, label):
+    def find_linked_article(self, namespace, page):
         from .models import Article
         classes = ['.wikilink']
 
+        slug = utils.slugify(page)
+        namespace = utils.slugify_namespace(namespace)
+
         try:
-            article = Article.objects.published().by_url(wiki).get()
+            article = Article.objects.published().get(slug=slug, namespace=namespace)
             href = article.get_absolute_url()
             title = article.title
         except Article.DoesNotExist:
             classes.append('.new')
-            if wiki.namespace:
-                href = reverse('wiki', kwargs={'namespace':wiki.namespace, 'slug':wiki.slug})
-            else:
-                href = reverse('wiki', args=[wiki.namespace, wiki.slug])
-            title = '{label} (page does not exist)'.format(label=label)
+            href = reverse('wiki', args=[namespace, slug])
+            title = '{page} (page does not exist)'.format(page=page)
 
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 
