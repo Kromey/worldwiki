@@ -69,10 +69,10 @@ class WikiPageView(View):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
-            qs = Article.objects.published()
+            qs = Article.objects.filter(is_published=True)
 
         try:
-            article = qs.by_namespace(namespace).by_slug(slug).get()
+            article = qs.get(slug=slug, namespace=namespace)
         except Article.DoesNotExist:
             return self.get_404(request, slug, namespace)
 
@@ -105,10 +105,7 @@ class WikiUpdateView(UpdateView):
     def get_object(self, queryset=None):
         queryset = queryset or self.get_queryset()
 
-        queryset = queryset.by_namespace(self.kwargs['namespace'])
-        queryset = queryset.by_slug(self.kwargs['slug'])
-
-        return queryset.get()
+        return queryset.get(**self.kwargs)
 
 class WikiCreateView(CreateView):
     model = Article

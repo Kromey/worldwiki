@@ -102,7 +102,7 @@ class WikiLinksPreprocessor(Preprocessor):
         namespace = utils.slugify_namespace(namespace)
 
         try:
-            article = Article.objects.published().get(slug=slug, namespace=namespace)
+            article = Article.objects.get(is_published=True, slug=slug, namespace=namespace)
             href = article.get_absolute_url()
             title = article.title
         except Article.DoesNotExist:
