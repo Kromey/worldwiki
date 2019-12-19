@@ -3,7 +3,6 @@ from django.urls import path,register_converter
 
 
 from .pages import WikiStart
-from wiki.path import WikiPath
 from .views import ArticleListView,TagView,WikiPageView,PreviewView,WikiCreateView,WikiUpdateView
 
 
