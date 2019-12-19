@@ -5,6 +5,7 @@ from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import DetailView,ListView
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView,UpdateView
 
 
 from .forms import ArticleForm
@@ -91,6 +92,16 @@ class WikiPageView(View):
         else:
             return render(request, self.article_template, context=context)
 
+
+class WikiUpdateView(UpdateView):
+    model = Article
+    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
+    slug_url_kwarg = 'wiki'
+    slug_field = 'wikipath'
+
+class WikiCreateView(CreateView):
+    model = Article
+    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
 
 class WikiEditView(View):
     def get(self, request, wiki):

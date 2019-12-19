@@ -21,6 +21,15 @@ from .markdown import markdown_to_html
 
 
 class WikiQuerySet(models.QuerySet):
+    def filter(self, **kwargs):
+        if 'wikipath' in kwargs:
+            wiki = kwargs['wikipath']
+            del kwargs['wikipath']
+
+            return self.by_url(wiki).filter(**kwargs)
+        else:
+            return super().filter(**kwargs)
+
     def by_slug(self, slug):
         return self.filter(slug__iexact=slug)
 
