@@ -2,8 +2,8 @@ from django.conf.urls import url
 from django.urls import path,register_converter
 
 
-from .pages import WikiStart
-from .views import ArticleListView,TagView,WikiPageView,PreviewView,WikiCreateView,WikiUpdateView
+from wiki.pages import WikiStart
+from wiki.views import ArticleListView,TagView,WikiPageView,PreviewView,WikiCreateView,WikiUpdateView
 
 
 class NamespaceConverter:
@@ -44,5 +44,5 @@ urlpatterns = [
     path('<namespace:namespace><wikislug:slug>', WikiPageView.as_view(), name='wiki'),
 
     url(r'^tag:(?P<slug>[-\w_()]+)$', TagView.as_view(), name='wiki-tag'),
-    url(r'^$', WikiPageView.as_view(), kwargs={'wiki':WikiStart}, name='wiki-start'),
+    path('', WikiPageView.as_view(), kwargs=WikiStart, name='wiki-start'),
 ]
