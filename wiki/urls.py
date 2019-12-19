@@ -25,8 +25,6 @@ urlpatterns = [
     url(r'^special:index$', ArticleListView.as_view(), name='wiki-index'),
     url(r'^special:preview$', PreviewView.as_view(), name='wiki-preview'),
 
-    #path('<wiki:wiki>/edit', WikiEditView.as_view(), name='wiki-edit'),
-    #path('<wiki:wiki>/new', WikiEditView.as_view(), name='wiki-new'),
     path('<wiki:wiki>/edit', WikiUpdateView.as_view(), name='wiki-edit'),
     path('<wiki:wiki>/new', WikiCreateView.as_view(), name='wiki-new'),
     path('<wiki:wiki>', WikiPageView.as_view(), name='wiki'),
