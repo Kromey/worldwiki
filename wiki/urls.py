@@ -3,11 +3,23 @@ from django.urls import path,register_converter
 
 
 from .pages import WikiStart
-from .slug import WikiUrlConverter
+from wiki.path import WikiPath
 from .views import ArticleListView,TagView,WikiPageView,PreviewView,WikiEditView
 
 
-register_converter(WikiUrlConverter, 'wiki')
+class WikiPathUrlConverter:
+    regex = r'(?:[-a-zA-Z0-9_()]+/)*[-a-zA-Z0-9_()]+'
+
+    def to_python(self, value):
+        return WikiPath.from_url(value)
+
+    def to_url(self, value):
+        try:
+            return str(WikiPath.from_obj(value))
+        except AttributeError:
+            return str(value)
+
+register_converter(WikiPathUrlConverter, 'wiki')
 
 urlpatterns = [
     url(r'^special:index$', ArticleListView.as_view(), name='wiki-index'),

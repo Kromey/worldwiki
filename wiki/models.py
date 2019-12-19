@@ -12,7 +12,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 
-from .slug import WikiSlugField,WikiNamespaceField,slugify,WikiUrlConverter
+from wiki.path import WikiPath
+from .slug import WikiSlugField,WikiNamespaceField
 from .markdown import markdown_to_html
 
 
@@ -47,7 +48,7 @@ class Tag(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.name)
+            self.slug = WikiPath.transform_slug(self.name)
 
         return super().save(*args, **kwargs)
 
@@ -106,7 +107,7 @@ BaseURL: {base_url}
         url = m.group('redirect')
 
         try:
-            a = Article.objects.by_url(WikiUrlConverter().to_python(url)).get()
+            a = Article.objects.by_url(WikiPath.from_url(url)).get()
 
             if sticky_redirect and a.is_redirect:
                 return self._sticky_url(a.get_absolute_url())
@@ -130,7 +131,7 @@ BaseURL: {base_url}
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = WikiPath.transform_slug(self.title)
 
         if self.slug.startswith('special:'):
             self.is_published = True
@@ -148,7 +149,7 @@ BaseURL: {base_url}
         super().clean()
 
         if not self.slug:
-            self.slug = slugify(self.title)
+            self.slug = WikiPath.transform_slug(self.title)
 
     def validate_unique(self, exclude=None):
         super().validate_unique(exclude)
@@ -162,7 +163,7 @@ BaseURL: {base_url}
 
     def get_absolute_url(self):
         try:
-            return reverse('wiki', args=[self])
+            return reverse('wiki', args=[WikiPath(self.slug, self.namespace)])
         except NoReverseMatch:
             return None
 

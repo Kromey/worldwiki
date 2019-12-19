@@ -12,10 +12,9 @@ from markdown.util import etree
 from markdown.extensions.toc import TocExtension
 
 
-from .slug import slugify_path,WikiUrlConverter
+from wiki.path import WikiPath
 
 
-wiki_converter = WikiUrlConverter()
 wikilink_re = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
 
 
@@ -48,7 +47,7 @@ class WikiLinksPreprocessor(Preprocessor):
 
         raw_link = self.rebase_link(m.group('link'))
 
-        wikiurl = wiki_converter.to_python(slugify_path(raw_link))
+        wikiurl = WikiPath.from_title(raw_link)
 
         label = m.group('label') or raw_link.split('/').pop()
         label = label.strip()
@@ -113,7 +112,7 @@ class WikiLinksPreprocessor(Preprocessor):
     def handleMatch(self, m):
         raw_link = m.group('link')
 
-        wiki = wiki_converter.to_python(slugify_path(raw_link))
+        wiki = WikiPath.from_title(raw_link)
 
         label = m.group('label') or raw_link.split('/').pop()
         label = label.strip()

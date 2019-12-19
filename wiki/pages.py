@@ -1,5 +1,5 @@
-from .slug import WikiUrl
+from wiki.path import WikiPath
 
-Error404 = WikiUrl('Error404', '')
-WikiStart = WikiUrl('start', '')
-WikiSidebar = WikiUrl('sidebar', '')
+Error404 = WikiPath('Error404')
+WikiStart = WikiPath('start')
+WikiSidebar = WikiPath('sidebar')
