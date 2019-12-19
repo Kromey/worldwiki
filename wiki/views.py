@@ -91,7 +91,7 @@ class WikiPageView(View):
 
     def get_404(self, request, slug, namespace):
         context = {
-            'article': Article.objects.get(**Error404),
+            'article': Error404.get(),
             'create_url': reverse('wiki-new', args=[namespace, slug]),
         }
 

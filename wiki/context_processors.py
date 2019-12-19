@@ -8,13 +8,13 @@ from wiki.pages import WikiSidebar
 class Sidebar:
     def __init__(self):
         try:
-            sidebar = Article.objects.get(**WikiSidebar)
+            sidebar = WikiSidebar.get()
 
             self.content = sidebar.html
             self.css = 'sidebar col-md-3'
             self.exists = True
         except Article.DoesNotExist:
-            self.content = 'To display a sidebar, create an article with the slug "{slug}"'.format(slug=WikiSidebar['slug'])
+            self.content = 'To display a sidebar, create an article with the slug "{slug}"'.format(slug=WikiSidebar.slug)
             self.css = 'sidebar hidden'
             self.exists = False
 
