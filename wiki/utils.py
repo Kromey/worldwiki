@@ -58,3 +58,26 @@ def split_path(path):
 
     return (namespace, slug)
 
+def join_path(path, *paths):
+    for p in paths:
+        # Special case: p is absolute
+        if p.startswith('/'):
+            path = p.strip('/')
+            continue
+
+        # './' is relative, but so is nothing
+        if p.startswith('./'):
+            p = p[2:]
+
+        # '../' moves us up a namespace
+        while p.startswith('../'):
+            path = namespace(path)
+            p = p[3:]
+
+        path = '/'.join([path, p]).strip('/')
+
+    return path
+
+def namespace(path):
+    return split_path(path)[0]
+

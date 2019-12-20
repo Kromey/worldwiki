@@ -35,7 +35,7 @@ class WikiLinksExtension(Extension):
 
 class WikiLinksPreprocessor(Preprocessor):
     def run(self, lines):
-        self.base_url = self.md.Meta.get('baseurl', [''])[0].strip()
+        self.namespace = self.md.Meta.get('namespace', [''])[0].strip()
 
         return [self.processLine(line) for line in lines]
 
@@ -45,7 +45,7 @@ class WikiLinksPreprocessor(Preprocessor):
         if m is None:
             return line
 
-        raw_link = self.rebase_link(m.group('link'))
+        raw_link = utils.join_path(self.namespace, m.group('link'))
 
         namespace, page = utils.split_path(raw_link)
 
@@ -69,30 +69,6 @@ class WikiLinksPreprocessor(Preprocessor):
 
         # Need to go again in case there's other links
         return self.processLine(line)
-
-    def rebase_link(self, link):
-        # Link is an absolute path
-        if link.startswith('/'):
-            return link.lstrip('/')
-
-        base = self.base_url
-
-        # If the link starts with './', it's relative to this page
-        if link.startswith('./'):
-            return base + link.lstrip('.')
-
-        # Doesn't start with './', so it's relative to the current namespace
-        base = self.namespace(base)
-
-        # '../' is a reference to the parent namespace
-        while link.startswith('../'):
-            link = link[3:]
-            base = self.namespace(base)
-
-        return '/'.join([base, link]).lstrip('/')
-
-    def namespace(self, link):
-        return '/'.join(link.split('/')[:-1])
 
     def find_linked_article(self, namespace, page):
         from .models import Article

@@ -64,11 +64,11 @@ class Article(models.Model):
         meta = """
 Title: {title}
 Published: {published}
-BaseURL: {base_url}
+Namespace: {namespace}
 """.format(
             title=self.title,
             published=self.published,
-            base_url='/'.join([self.namespace, self.slug]).lstrip('/'),
+            namespace=self.namespace,
         ).strip()
 
         md = meta + '\n\n' + self.markdown
