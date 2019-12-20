@@ -110,8 +110,11 @@ class WikiCreateView(CreateView):
     fields = ('title','slug','markdown','is_published','is_nsfw','is_spoiler')
 
     def get_initial(self):
-        title = self.kwargs['slug'].replace('_', ' ').title()
-        slug = utils.slugify(title)
+        slug = self.kwargs['slug']
+        title = slug.replace('_', ' ').strip().title()
+
+        if not self.kwargs['slug'].startswith('_'):
+            slug = utils.slugify(title)
 
         return {
             'title': title,
