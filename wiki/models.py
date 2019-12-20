@@ -45,7 +45,7 @@ class Tag(models.Model):
 class Article(models.Model):
     title = models.CharField('article title', max_length=50)
     namespace = WikiNamespaceField(blank=True, default='')
-    slug = WikiSlugField(unique=True, blank=True)
+    slug = WikiSlugField(blank=True)
     published = models.DateTimeField(null=True, default=None)
     edited = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField('publish?', default=False)

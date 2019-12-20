@@ -107,7 +107,7 @@ class WikiUpdateView(UpdateView):
 
 class WikiCreateView(CreateView):
     model = Article
-    fields = ('title','slug','markdown','is_published','is_nsfw','is_spoiler')
+    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
 
     def get_initial(self):
         slug = self.kwargs['slug']
