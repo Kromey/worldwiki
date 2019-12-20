@@ -35,7 +35,8 @@ class WikiLinksExtension(Extension):
 
 class WikiLinksPreprocessor(Preprocessor):
     def run(self, lines):
-        self.namespace = self.md.Meta.get('namespace', [''])[0].strip()
+        self.namespace = self.md.Meta.get('namespace', ['']).strip()
+        print(self.namespace)
 
         return [self.processLine(line) for line in lines]
 
@@ -110,7 +111,6 @@ converter = markdown.Markdown(
             'markdown.extensions.extra',
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
-            'markdown.extensions.meta',
             TocExtension(permalink=True, baselevel=2),
             WikiLinksExtension(),
             EscapeHtmlExtension(),
@@ -119,7 +119,11 @@ converter = markdown.Markdown(
 linker = bleach.linkifier.Linker(callbacks=[])
 
 
-def markdown_to_html(md):
+def markdown_to_html(md, meta=None):
+    if not meta:
+        meta = {}
+
+    converter.Meta = meta
     html = converter.reset().convert(md)
     linked = linker.linkify(html)
 

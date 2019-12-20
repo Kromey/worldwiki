@@ -61,19 +61,13 @@ class Article(models.Model):
 
     @property
     def html(self):
-        meta = """
-Title: {title}
-Published: {published}
-Namespace: {namespace}
-""".format(
-            title=self.title,
-            published=self.published,
-            namespace=self.namespace,
-        ).strip()
+        meta = {
+            'title': self.title,
+            'published': self.published,
+            'namespace': self.namespace,
+        }
 
-        md = meta + '\n\n' + self.markdown
-
-        html = markdown_to_html(md)
+        html = markdown_to_html(self.markdown, meta)
         return mark_safe(html)
 
     REDIRECT_RE = re.compile(r'^\[\[REDIRECT:(?P<redirect>.*?)\]\]', re.I)
