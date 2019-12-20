@@ -17,6 +17,12 @@
 	<button role="button" id="go-back" class="btn btn-xs btn-default">Cancel</button>
 </div>
 <div class="article_edit">
+	{% if form.instance.slug %}
+	<em>
+		Editing page at "{{ form.instance.slug }}"
+		{% if form.instance.namespace %}in "{{ form.instance.namespace }}"{% endif %}
+	</em>
+	{% endif %}
 	<form method="POST" id="article-form">
 		{% csrf_token %}
 		{{ form.as_p }}

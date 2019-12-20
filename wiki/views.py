@@ -98,7 +98,7 @@ class WikiPageView(View):
 
 class WikiUpdateView(UpdateView):
     model = Article
-    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
+    fields = ('title','markdown','is_published','is_nsfw','is_spoiler')
 
     def get_object(self, queryset=None):
         queryset = queryset or self.get_queryset()
@@ -107,7 +107,7 @@ class WikiUpdateView(UpdateView):
 
 class WikiCreateView(CreateView):
     model = Article
-    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
+    fields = ('title','slug','markdown','is_published','is_nsfw','is_spoiler')
 
     def get_initial(self):
         title = self.kwargs['slug'].replace('_', ' ').title()
