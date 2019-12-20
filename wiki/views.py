@@ -116,12 +116,30 @@ class WikiCreateView(CreateView):
         if not self.kwargs['slug'].startswith('_'):
             slug = utils.slugify(title)
 
-        return {
+        initial = {
             'title': title,
             'slug': slug,
             'namespace': self.kwargs['namespace'],
             'is_published': True,
         }
+
+        template = self._get_template()
+        if template:
+            initial['markdown'] = template
+
+        return initial
+
+    def _get_template(self):
+        namespace = self.kwargs['namespace']
+
+        while namespace:
+            try:
+                tmpl = Article.objects.get(namespace=namespace, slug='_template')
+                return tmpl.markdown
+            except Article.DoesNotExist:
+                namespace = utils.namespace(namespace)
+
+        return None
 
 class PreviewView(View):
     def post(self, request):
