@@ -130,14 +130,18 @@ class WikiCreateView(CreateView):
         return initial
 
     def _get_template(self):
-        namespace = self.kwargs['namespace']
+        # Start with a bogus "extra" namespace
+        # We'll pop it off before the first lookup, which is how we'll get to the root
+        namespace = utils.join_path(self.kwargs['namespace'], '__extra__')
 
         while namespace:
+            namespace = utils.namespace(namespace)
+
             try:
                 tmpl = Article.objects.get(namespace=namespace, slug='_template')
                 return tmpl.markdown
             except Article.DoesNotExist:
-                namespace = utils.namespace(namespace)
+                pass
 
         return None
 
