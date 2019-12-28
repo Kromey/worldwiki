@@ -25,6 +25,9 @@ abbr[title] {
 	text-decoration: none;
 	border-color: inherit;
 }
+dd {
+	margin-left: 2em;
+}
 
 .container {
 	display: flex;
