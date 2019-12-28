@@ -160,3 +160,11 @@ class Article(models.Model):
         ordering = ('slug',)
 
 
+class Term(models.Model):
+    term = models.CharField(max_length=250, unique=True)
+    definition = models.TextField()
+
+    class Meta:
+        ordering = ('term',)
+
+
