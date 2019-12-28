@@ -1,0 +1,16 @@
+{% extends 'wiki/_base.html' %}
+
+{% block title %}Glossary{% endblock %}
+{% block header %}Glossary{% endblock %}
+
+{% block content %}
+<div class="term-list">
+	<dl>
+		{% for term in terms %}
+		<dt>{{ term.term }}</dt>
+		<dd>{{ term.definition }}</dt>
+		{% endfor %}
+	</dl>
+</div>
+{% endblock content %}
+

@@ -10,7 +10,7 @@ from django.views.generic.edit import CreateView,UpdateView
 
 from wiki import utils
 from wiki.markdown import markdown_to_html
-from wiki.models import Article,Tag
+from wiki.models import Article,Tag,Term
 from wiki.pages import Error404
 
 
@@ -148,4 +148,10 @@ class WikiCreateView(CreateView):
 class PreviewView(View):
     def post(self, request):
         return HttpResponse(markdown_to_html(request.POST.get('markdown', '')))
+
+
+class GlossaryView(ListView):
+    model = Term
+    context_object_name = 'terms'
+
 
