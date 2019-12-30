@@ -21,6 +21,10 @@ header a:hover {
 	text-decoration: none;
 }
 
+.subhead {
+	font-size: 50%;
+}
+
 abbr[title] {
 	text-decoration: none;
 	border-color: inherit;

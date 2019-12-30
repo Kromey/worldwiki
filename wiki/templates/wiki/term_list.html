@@ -13,7 +13,7 @@
 	</ul>
 
 	{% for index, terms in glossary %}
-	<h2 id="{{ index }}">{{ index }}</h2>
+	<h2 id="{{ index }}">{{ index }} <a class="subhead" href="#top">back to top</a></h2>
 	<dl>
 		{% for term in terms %}
 		<div id="{{ term.anchor }}">
