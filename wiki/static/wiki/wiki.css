@@ -34,7 +34,10 @@ abbr[title] {
 	list-style: none;
 	display: inline-block;
 }
-h2:target, dt:target, dt:target+dd {
+.term-list dl div {
+	cursor: pointer;
+}
+.term-list :target {
 	background-color: #dde;
 }
 dd {

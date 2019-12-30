@@ -164,6 +164,10 @@ class Term(models.Model):
     term = models.CharField(max_length=250, unique=True)
     definition = models.TextField()
 
+    @property
+    def anchor(self):
+        return utils.slugify(self.term)
+
     class Meta:
         ordering = ('term',)
 

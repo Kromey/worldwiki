@@ -16,8 +16,10 @@
 	<h2 id="{{ index }}">{{ index }}</h2>
 	<dl>
 		{% for term in terms %}
-		<dt>{{ term.term }}</dt>
-		<dd>{{ term.definition }}</dt>
+		<div id="{{ term.anchor }}">
+			<dt>{{ term.term }}</dt>
+			<dd>{{ term.definition }}</dt>
+		</div>
 		{% endfor %}
 	</dl>
 	{% endfor %}

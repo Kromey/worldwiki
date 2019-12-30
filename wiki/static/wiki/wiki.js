@@ -12,6 +12,10 @@ $(function() {
 		window.history.back();
 	});
 
+	$('.term-list dl div').click(function() {
+		window.location.hash = this.id;
+	});
+
 	$('textarea[data-provide=markdown]').markdown({
 		onPreview: function(e, previewContainer) {
 			$.post("/w/special:preview", $('#article-form').serialize())
