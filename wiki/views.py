@@ -1,6 +1,6 @@
 from django.http import Http404,HttpResponse
 from django.shortcuts import get_object_or_404,redirect,render
-from django.urls import reverse
+from django.urls import reverse,reverse_lazy
 from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import DetailView,ListView
@@ -153,5 +153,13 @@ class PreviewView(View):
 class GlossaryView(ListView):
     model = Term
     context_object_name = 'terms'
+
+class TermCreateView(CreateView):
+    model = Term
+    fields = ('term', 'definition')
+
+class TermEditView(UpdateView):
+    model = Term
+    fields = ('term', 'definition')
 
 

@@ -6,7 +6,12 @@
 {% block content %}
 <div class="term-list">
 	{% regroup terms by term.0|upper as glossary %}
+	{% if perms.wiki.add_term %}
+	<a href="{% url 'wiki-term-new' %}" class="btn btn-xs btn-success">New Term</a>
+	{% endif %}
+
 	<ul class="index">
+		<li>Jump to:</li>
 		{% for index, terms in glossary %}
 		<li><a href="#{{ index }}">{{ index }}</a></li>
 		{% endfor %}
@@ -17,7 +22,10 @@
 	<dl>
 		{% for term in terms %}
 		<div id="{{ term.anchor }}">
-			<dt>{{ term.term }}</dt>
+			<dt>
+				{{ term.term }}
+				{% if perms.wiki.change_term %}<a href="{% url 'wiki-term-edit' term.id %}" class="btn btn-xs btn-default">Edit</a>{% endif %}
+			</dt>
 			<dd>{{ term.definition }}</dt>
 		</div>
 		{% endfor %}

@@ -168,6 +168,12 @@ class Term(models.Model):
     def anchor(self):
         return utils.slugify(self.term)
 
+    def get_absolute_url(self):
+        return '{url}#{anchor}'.format(
+            url = reverse('wiki-glossary'),
+            anchor = self.anchor,
+        )
+
     class Meta:
         ordering = ('term',)
 

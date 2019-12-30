@@ -33,6 +33,9 @@ register_converter(WikiSlugConverter, 'wikislug')
 
 urlpatterns = [
     path('glossary', views.GlossaryView.as_view(), name='wiki-glossary'),
+    path('glossary/edit', views.TermCreateView.as_view(), name='wiki-term-new'),
+    path('glossary/edit/<int:pk>', views.TermEditView.as_view(), name='wiki-term-edit'),
+
     path('special:index', views.ArticleListView.as_view(), name='wiki-index'),
     path('special:preview', views.PreviewView.as_view(), name='wiki-preview'),
 
