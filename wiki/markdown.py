@@ -53,20 +53,33 @@ class WikiLinksPreprocessor(Preprocessor):
         label = m.group('label') or page
         label = label.strip()
 
-        (href, title, classes) = self.find_linked_article(namespace, page)
+        link_type = m.group('type') or ''
+        link_type = link_type.rstrip(':').lower()
 
-        if m.group('type'):
-            classes += ' .' + m.group('type').rstrip(':').lower()
+        if link_type == 'term' or link_type == 'def':
+            (href, title, classes) = self.find_glossary_term(page)
+        else:
+            (href, title, classes) = self.find_linked_article(namespace, page)
 
-        line = line.replace(
-            m[0],
-            '[{label}]({href}){{: {classes} title="{title}" }}'.format(
-                label=label,
-                href=href,
-                classes=classes,
-                title=title,
-            ),
-        )
+        if href:
+            if m.group('type'):
+                classes += ' .' + m.group('type').rstrip(':').lower()
+
+            line = line.replace(
+                m[0],
+                '[{label}]({href}){{: {classes} title="{title}" }}'.format(
+                    label=label,
+                    href=href,
+                    classes=classes,
+                    title=title,
+                ),
+            )
+        else:
+            # Nothing to link to, remove link
+            line = line.replace(
+                m[0],
+                label,
+            )
 
         # Need to go again in case there's other links
         return self.processLine(line)
@@ -86,6 +99,20 @@ class WikiLinksPreprocessor(Preprocessor):
             classes.append('.new')
             href = reverse('wiki', args=[namespace, slug])
             title = '{page} (page does not exist)'.format(page=page)
+
+        return href, title.replace('"', '&quot;'), ' '.join(classes)
+
+    def find_glossary_term(self, term):
+        from .models import Term
+        classes = ['.wikiterm']
+
+        try:
+            term = Term.objects.get(term__iexact=term)
+            href = term.get_absolute_url()
+            title = term.definition
+        except Term.DoesNotExist:
+            href = None
+            title = ''
 
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 

@@ -146,12 +146,10 @@ div#article_edited {
 }
 
 a.wikilink.new {
-	text-decoration: none;
-	border-bottom: 1px dashed;
+	text-decoration: dashed underline;
 	color: #ff1a1a;
 }
 a.wikilink.new:hover {
-	text-decoration: none;
 	color: #d81515;
 }
 a.wikilink.redirect::before {
@@ -161,8 +159,13 @@ a.wikilink.redirect::before {
 	display: inline-block;
 	margin-right: 3px;
 }
+a.wikiterm {
+	text-decoration: dotted underline;
+	cursor: help;
+	color: inherit;
+}
 .sidebar a.wikilink.new {
-	border: none;
+	text-decoration: none;
 }
 a.headerlink {
 	display: none;
