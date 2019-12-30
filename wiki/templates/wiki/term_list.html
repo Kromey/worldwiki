@@ -5,12 +5,22 @@
 
 {% block content %}
 <div class="term-list">
+	{% regroup terms by term.0|upper as glossary %}
+	<ul class="index">
+		{% for index, terms in glossary %}
+		<li><a href="#{{ index }}">{{ index }}</a></li>
+		{% endfor %}
+	</ul>
+
+	{% for index, terms in glossary %}
+	<h2 id="{{ index }}">{{ index }}</h2>
 	<dl>
 		{% for term in terms %}
 		<dt>{{ term.term }}</dt>
 		<dd>{{ term.definition }}</dt>
 		{% endfor %}
 	</dl>
+	{% endfor %}
 </div>
 {% endblock content %}
 

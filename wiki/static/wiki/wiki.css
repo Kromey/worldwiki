@@ -25,8 +25,20 @@ abbr[title] {
 	text-decoration: none;
 	border-color: inherit;
 }
+
+.term-list .index {
+	margin: 0;
+	padding: 0 0 0 3em;
+}
+.term-list .index li {
+	list-style: none;
+	display: inline-block;
+}
+h2:target, dt:target, dt:target+dd {
+	background-color: #dde;
+}
 dd {
-	margin-left: 2em;
+	padding-left: 2em;
 }
 
 .container {
