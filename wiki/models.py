@@ -83,9 +83,12 @@ class Article(models.Model):
             return None
 
         url = m.group('redirect')
+        url = utils.join_path(self.namespace, url)
 
         try:
             namespace, slug = utils.split_path(url)
+            slug = utils.slugify(slug)
+            namespace = utils.slugify_namespace(namespace)
 
             a = Article.objects.get(namespace=namespace, slug=slug)
 
@@ -94,7 +97,11 @@ class Article(models.Model):
             else:
                 return a.get_absolute_url()
         except Article.DoesNotExist:
-            return url
+            namespace, page = utils.split_path(url)
+            slug = utils.slugify(slug)
+            namespace = utils.slugify_namespace(namespace)
+
+            return reverse('wiki', args=[namespace, slug])
 
     def _sticky_url(self, url):
         url = urlsplit(url)
