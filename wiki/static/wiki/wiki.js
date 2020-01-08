@@ -33,7 +33,7 @@ $(function() {
 	*/
 
 	window.addEventListener('DOMContentLoaded', (event) => {
-		if(history.replaceState) {
+		if(history.replaceState && window.location.search.match('redirect=no') === null) {
 			let elm = document.getElementById('article_tags');
 
 			if(elm && elm.dataset.canonical) {
