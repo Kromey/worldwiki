@@ -233,3 +233,17 @@ blockquote {
 	font-style: italic;
 	font-size: medium;
 }
+
+input[type=text], textarea {
+	display: block;
+	width: 100%;
+	padding: 2px 4px;
+	border-radius: 4px;
+	border: 1px solid #ccd;
+	background-color: #eef;
+	resize: vertical;
+}
+.helptext {
+	margin-left: 1em;
+	font-style: italic;
+}
