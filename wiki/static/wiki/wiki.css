@@ -240,7 +240,7 @@ input[type=text], textarea {
 	padding: 2px 4px;
 	border-radius: 4px;
 	border: 1px solid #ccd;
-	background-color: #eef;
+	background-color: #f3f3ff;
 	resize: vertical;
 }
 .helptext {
