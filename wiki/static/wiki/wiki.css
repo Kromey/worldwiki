@@ -213,6 +213,12 @@ h6:hover a.headerlink
 	background-color: #eee;
 }
 
+.hatnote {
+	margin-left: 2em;
+	font-size: 95%;
+	font-style: italic;
+}
+
 .admonition {
 	margin-left: 20px;
 	margin-right: 15px;

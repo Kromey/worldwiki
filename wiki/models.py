@@ -76,32 +76,25 @@ class Article(models.Model):
     def is_redirect(self):
         return self.REDIRECT_RE.match(self.markdown.strip()) is not None
 
-    def get_redirect_url(self, sticky_redirect=True):
+    def get_redirect(self, qs=None):
         m = self.REDIRECT_RE.match(self.markdown.strip())
 
         if m is None:
             return None
 
         url = m.group('redirect')
+        # Prepend current namespace if redirect URL is not absolute
         url = utils.join_path(self.namespace, url)
 
-        try:
-            namespace, slug = utils.split_path(url)
-            slug = utils.slugify(slug)
-            namespace = utils.slugify_namespace(namespace)
+        # Get and slugify namespace and slug from URL
+        namespace, slug = utils.split_path(url)
+        slug = utils.slugify(slug)
+        namespace = utils.slugify_namespace(namespace)
 
-            a = Article.objects.get(namespace=namespace, slug=slug)
+        if qs is None:
+            qs = Article.objects.filter(is_published=True)
 
-            if sticky_redirect and a.is_redirect:
-                return self._sticky_url(a.get_absolute_url())
-            else:
-                return a.get_absolute_url()
-        except Article.DoesNotExist:
-            namespace, page = utils.split_path(url)
-            slug = utils.slugify(slug)
-            namespace = utils.slugify_namespace(namespace)
-
-            return reverse('wiki', args=[namespace, slug])
+        return qs.get(namespace=namespace, slug=slug)
 
     def _sticky_url(self, url):
         url = urlsplit(url)

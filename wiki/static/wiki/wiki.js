@@ -16,6 +16,7 @@ $(function() {
 		window.location.hash = this.id;
 	});
 
+	/*
 	$('textarea[data-provide=markdown]').markdown({
 		onPreview: function(e, previewContainer) {
 			$.post("/w/special:preview", $('#article-form').serialize())
@@ -27,6 +28,20 @@ $(function() {
 			});
 
 			return "Formatting...";
+		}
+	});
+	*/
+
+	window.addEventListener('DOMContentLoaded', (event) => {
+		console.log('DOMContentLoaded');
+		if(history.replaceState) {
+			let elm = document.getElementById('article_tags');
+			console.log('elm', elm);
+
+			if(elm && elm.dataset.canonical) {
+				console.log('elm.canonical', elm.dataset.canonical);
+				history.replaceState(history.state, '', elm.dataset.canonical);
+			}
 		}
 	});
 });

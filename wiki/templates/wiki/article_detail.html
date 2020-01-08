@@ -4,7 +4,10 @@
 {% block header %}{{ article.title }}{% endblock %}
 
 {% block content %}
-<div class="articles-tags text-right">
+<div
+	id="article_tags"
+	data-canonical="{{ article.get_absolute_url }}"
+	class="articles-tags text-right">
 	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
 	{% if article.is_redirect %}<span class="label label-warning">Redirect Page</span>{% endif %}
 	{% if article.is_nsfw %}<span class="label label-danger">NSFW</span>{% endif %}
@@ -22,6 +25,11 @@
 </div>
 <div class="article_content">
 	<div>
+		{% if redirected %}
+		<p class="hatnote">
+		Redirected from <a href="{{ redirected.get_absolute_url }}?redirect=no">{{ redirected.title }}</a>
+		</p>
+		{% endif %}
 		{{ article.html }}
 	</div>
 	<button role="button" class="btn btn-xs btn-default pull-right" id="show-source">View Source</button>

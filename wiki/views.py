@@ -55,7 +55,16 @@ class WikiPageView(View):
     def get(self, request, slug, namespace):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
 
-        return self.get_article(request, slug, namespace)
+        redirected, article = self.get_article(slug, namespace)
+        context = {
+            'article':article,
+            'redirected':redirected,
+        }
+
+        if article.is_nsfw and not self.show_nsfw_content:
+            return render(request, self.nsfw_template, context=context)
+        else:
+            return render(request, self.article_template, context=context)
 
     def post(self, request, *args, **kwargs):
         if request.POST.get('show-me'):
@@ -65,7 +74,7 @@ class WikiPageView(View):
 
         return self.get(request, *args, **kwargs)
 
-    def get_article(self, request, slug, namespace):
+    def get_article(self, slug, namespace):
         if self.request.user.has_perm('wiki.change_article') or 'preview' in self.request.GET:
             qs = Article.objects
         else:
@@ -76,16 +85,13 @@ class WikiPageView(View):
         except Article.DoesNotExist:
             return self.get_404(request, slug, namespace)
 
-        context = {'article':article}
-
         if article.is_redirect and self.request.GET.get('redirect') != 'no':
-            return redirect(article.get_redirect_url())
-        elif article.slug != slug or article.namespace != namespace:
-            return redirect(article.get_absolute_url())
-        elif article.is_nsfw and not self.show_nsfw_content:
-            return render(request, self.nsfw_template, context=context)
-        else:
-            return render(request, self.article_template, context=context)
+            try:
+                return (article, article.get_redirect(qs))
+            except Article.DoesNotExist:
+                pass
+
+        return (None, article)
 
     def get_404(self, request, slug, namespace):
         context = {
