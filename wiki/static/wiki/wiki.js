@@ -33,13 +33,10 @@ $(function() {
 	*/
 
 	window.addEventListener('DOMContentLoaded', (event) => {
-		console.log('DOMContentLoaded');
 		if(history.replaceState) {
 			let elm = document.getElementById('article_tags');
-			console.log('elm', elm);
 
 			if(elm && elm.dataset.canonical) {
-				console.log('elm.canonical', elm.dataset.canonical);
 				history.replaceState(history.state, '', elm.dataset.canonical);
 			}
 		}
