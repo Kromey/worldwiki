@@ -1,29 +1,12 @@
 import re
 
 
-import bleach
-from django.db.models import Q
 from django.urls import reverse
-from django.utils import timezone
-import markdown
 from markdown.extensions import Extension
 from markdown.preprocessors import Preprocessor
-from markdown.util import etree
-from markdown.extensions.toc import TocExtension
 
 
 from wiki import utils
-
-
-wikilink_re = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
-
-
-class EscapeHtmlExtension(Extension):
-    def extendMarkdown(self, md, md_globals):
-        # Don't process raw HTML; better for our purposes than bleach
-        # https://pythonhosted.org/Markdown/release-2.6.html#safe_mode-deprecated
-        del md.preprocessors['html_block']
-        del md.inlinePatterns['html']
 
 
 class WikiLinksExtension(Extension):
@@ -34,6 +17,8 @@ class WikiLinksExtension(Extension):
         md.preprocessors.register(wikilinks, 'wikilinks', 25)
 
 class WikiLinksPreprocessor(Preprocessor):
+    __WIKILINK_RE = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
+
     def run(self, lines):
         self.namespace = self.md.Meta.get('namespace', ['']).strip()
         print(self.namespace)
@@ -41,7 +26,7 @@ class WikiLinksPreprocessor(Preprocessor):
         return [self.processLine(line) for line in lines]
 
     def processLine(self, line):
-        m = wikilink_re.search(line)
+        m = self.__WIKILINK_RE.search(line)
 
         if m is None:
             return line
@@ -85,7 +70,7 @@ class WikiLinksPreprocessor(Preprocessor):
         return self.processLine(line)
 
     def find_linked_article(self, namespace, page):
-        from .models import Article
+        from wiki.models import Article
         classes = ['.wikilink']
 
         slug = utils.slugify(page)
@@ -103,7 +88,7 @@ class WikiLinksPreprocessor(Preprocessor):
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 
     def find_glossary_term(self, term):
-        from .models import Term
+        from wiki.models import Term
         classes = ['.wikiterm']
 
         try:
@@ -117,7 +102,7 @@ class WikiLinksPreprocessor(Preprocessor):
         return href, title.replace('"', '&quot;'), ' '.join(classes)
 
     def build_tag_link(self, slug, label):
-        from .models import Tag
+        from wiki.models import Tag
         classes = ['wikitag']
         try:
             tag = Tag.objects.get(slug__iexact=slug)
@@ -132,27 +117,6 @@ class WikiLinksPreprocessor(Preprocessor):
         return (href, title, classes)
 
 
-converter = markdown.Markdown(
-        output_format='html5',
-        extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.smarty',
-            'markdown.extensions.admonition',
-            TocExtension(permalink=True, baselevel=2),
-            WikiLinksExtension(),
-            EscapeHtmlExtension(),
-            ],
-        )
-linker = bleach.linkifier.Linker(callbacks=[])
-
-
-def markdown_to_html(md, meta=None):
-    if not meta:
-        meta = {}
-
-    converter.Meta = meta
-    html = converter.reset().convert(md)
-    linked = linker.linkify(html)
-
-    return linked
+def makeExtension(**kwargs):
+    return WikiLinksExtension(**kwargs)
 

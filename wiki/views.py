@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView,UpdateView
 
 
 from wiki import utils
-from wiki.markdown import markdown_to_html
+from wiki.markdown import Markdown
 from wiki.models import Article,Tag,Term
 from wiki.pages import Error404
 
@@ -153,7 +153,7 @@ class WikiCreateView(CreateView):
 
 class PreviewView(View):
     def post(self, request):
-        return HttpResponse(markdown_to_html(request.POST.get('markdown', '')))
+        return HttpResponse(Markdown.to_html(request.POST.get('markdown', '')))
 
 
 class GlossaryView(ListView):

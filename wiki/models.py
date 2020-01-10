@@ -13,7 +13,7 @@ from django.utils.safestring import mark_safe
 
 from wiki import utils
 from wiki.fields import WikiSlugField,WikiNamespaceField
-from .markdown import markdown_to_html
+from wiki.markdown import Markdown
 
 
 # Create your models here.
@@ -26,7 +26,7 @@ class Tag(models.Model):
 
     @property
     def html(self):
-        html = markdown_to_html(self.description)
+        html = Markdown.to_html(self.description)
         return mark_safe(html)
 
     def __str__(self):
@@ -67,7 +67,7 @@ class Article(models.Model):
             'namespace': self.namespace,
         }
 
-        html = markdown_to_html(self.markdown, meta)
+        html = Markdown.to_html(self.markdown, meta)
         return mark_safe(html)
 
     REDIRECT_RE = re.compile(r'^\[\[REDIRECT:(?P<redirect>.*?)\]\]', re.I)
