@@ -55,11 +55,18 @@ class WikiPageView(View):
     def get(self, request, slug, namespace):
         self.show_nsfw_content = self.show_nsfw_content or request.session.get('show_nsfw', False)
 
-        redirected, article = self.get_article(slug, namespace)
-        context = {
-            'article':article,
-            'redirected':redirected,
-        }
+        try:
+            redirected, article = self.get_article(slug, namespace)
+            context = {
+                'article':article,
+                'redirected':redirected,
+            }
+        except Article.DoesNotExist:
+            article = Error404.get()
+            context = {
+                'article':article,
+                'create_url':reverse('wiki-new', args=[namespace, slug]),
+            }
 
         if article.is_nsfw and not self.show_nsfw_content:
             return render(request, self.nsfw_template, context=context)
@@ -80,10 +87,7 @@ class WikiPageView(View):
         else:
             qs = Article.objects.filter(is_published=True)
 
-        try:
-            article = qs.get(slug=slug, namespace=namespace)
-        except Article.DoesNotExist:
-            return self.get_404(request, slug, namespace)
+        article = qs.get(slug=slug, namespace=namespace)
 
         if article.is_redirect and self.request.GET.get('redirect') != 'no':
             try:
@@ -92,14 +96,6 @@ class WikiPageView(View):
                 pass
 
         return (None, article)
-
-    def get_404(self, request, slug, namespace):
-        context = {
-            'article': Error404.get(),
-            'create_url': reverse('wiki-new', args=[namespace, slug]),
-        }
-
-        return render(request, self.article_template, context=context)
 
 
 class WikiUpdateView(UpdateView):
