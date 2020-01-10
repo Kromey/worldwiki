@@ -11,6 +11,7 @@ class Markdown:
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
             TocExtension(permalink=True, baselevel=2),
+            'wiki.markdown.extensions.strikethrough',
             'wiki.markdown.extensions.wikilinks',
             'wiki.markdown.extensions.escapehtml',
             ],
