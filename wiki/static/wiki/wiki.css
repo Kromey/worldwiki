@@ -234,6 +234,11 @@ blockquote {
 	font-size: medium;
 }
 
+.todo {
+	font-style: italic;
+	color: #2A2;
+}
+
 input[type=text], textarea {
 	display: block;
 	width: 100%;

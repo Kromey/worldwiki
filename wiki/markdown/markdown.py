@@ -12,6 +12,7 @@ class Markdown:
             'markdown.extensions.admonition',
             TocExtension(permalink=True, baselevel=2),
             'wiki.markdown.extensions.strikethrough',
+            'wiki.markdown.extensions.tbd',
             'wiki.markdown.extensions.wikilinks',
             'wiki.markdown.extensions.escapehtml',
             ],
