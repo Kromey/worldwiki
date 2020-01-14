@@ -19,8 +19,8 @@
 <div class="article_edit">
 	{% if form.instance.slug %}
 	<em>
-		Editing page at "{{ form.instance.slug }}"
-		{% if form.instance.namespace %}in "{{ form.instance.namespace }}"{% endif %}
+		Editing page at
+		"{% if form.instance.namespace %}{{ form.instance.namespace }}/{% endif %}{{ form.instance.slug }}"
 	</em>
 	{% endif %}
 	<form method="POST" id="article-form">
