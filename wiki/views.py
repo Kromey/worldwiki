@@ -147,6 +147,26 @@ class WikiCreateView(CreateView):
 
         return None
 
+class WikiMoveView(WikiUpdateView):
+    fields = ('namespace','slug')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+
+        redirect = Article(
+            title = self.object.title,
+            is_published = self.object.is_published,
+            is_nsfw = self.object.is_nsfw,
+            is_spoiler = self.object.is_spoiler,
+            **self.kwargs,
+        )
+        redirect.markdown = '[[REDIRECT:/{article}]]'.format(
+            article = utils.join_path(self.object.namespace, self.object.slug),
+        )
+        redirect.save()
+
+        return response
+
 class PreviewView(View):
     def post(self, request):
         return HttpResponse(Markdown.to_html(request.POST.get('markdown', '')))

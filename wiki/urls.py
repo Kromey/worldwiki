@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('<namespace:namespace><wikislug:slug>/new', views.WikiCreateView.as_view(), name='wiki-new'),
     path('<namespace:namespace><wikislug:slug>/edit', views.WikiUpdateView.as_view(), name='wiki-edit'),
+    path('<namespace:namespace><wikislug:slug>/move', views.WikiMoveView.as_view(), name='wiki-move'),
     path('<namespace:namespace><wikislug:slug>', views.WikiPageView.as_view(), name='wiki'),
 
     path('tag:<wikislug:slug>', views.TagView.as_view(), name='wiki-tag'),

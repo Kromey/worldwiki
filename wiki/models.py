@@ -142,14 +142,17 @@ class Article(models.Model):
             raise ValidationError({'slug':'Namespace+slug must be unique (case-insensitive)'})
 
     def get_absolute_url(self):
-        try:
-            return reverse('wiki', args=[self.namespace, self.slug])
-        except NoReverseMatch:
-            return None
+        return self.__reverse('wiki')
 
     def get_edit_url(self):
+        return self.__reverse('wiki-edit')
+
+    def get_move_url(self):
+        return self.__reverse('wiki-move')
+
+    def __reverse(self, url):
         try:
-            return reverse('wiki-edit', args=[self.namespace, self.slug])
+            return reverse(url, args=[self.namespace, self.slug])
         except NoReverseMatch:
             return None
 
