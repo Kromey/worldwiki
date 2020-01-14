@@ -6,7 +6,7 @@
 {% block content %}
 <div
 	id="article_tags"
-	data-canonical="{{ article.get_absolute_url }}"
+	data-canonical="{{ canonical_url }}"
 	class="articles-tags text-right">
 	{% if not article.is_published %}<span class="label label-warning">Unpublished</span>{% endif %}
 	{% if article.is_redirect %}<span class="label label-warning">Redirect Page</span>{% endif %}

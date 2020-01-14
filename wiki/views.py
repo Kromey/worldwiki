@@ -60,6 +60,7 @@ class WikiPageView(View):
             context = {
                 'article':article,
                 'redirected':redirected,
+                'canonical_url':article.get_absolute_url(),
             }
         except Article.DoesNotExist:
             article = Error404.get()
