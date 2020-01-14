@@ -153,6 +153,16 @@ class WikiMoveView(WikiUpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
 
+        self.__create_redirect_page()
+
+        return response
+
+    def __create_redirect_page(self):
+        # Verify we're changing more than case
+        if self.kwargs['namespace'].lower() == self.object.namespace.lower():
+            if self.kwargs['slug'].lower() == self.object.slug.lower():
+                return
+
         redirect = Article(
             title = self.object.title,
             is_published = self.object.is_published,
@@ -164,8 +174,6 @@ class WikiMoveView(WikiUpdateView):
             article = utils.join_path(self.object.namespace, self.object.slug),
         )
         redirect.save()
-
-        return response
 
 class PreviewView(View):
     def post(self, request):
