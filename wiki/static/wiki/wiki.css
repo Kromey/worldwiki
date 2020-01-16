@@ -239,6 +239,13 @@ blockquote {
 	color: #2A2;
 }
 
+h2, .tag-description {
+	border-bottom: 1px solid #a2a9b1;
+}
+.sidebar h2, .tag-description:empty {
+	border-bottom: none;
+}
+
 input[type=text], textarea {
 	display: block;
 	width: 100%;

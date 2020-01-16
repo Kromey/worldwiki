@@ -1,0 +1,27 @@
+{% extends 'wiki/_base.html' %}
+
+{% block title %}Tag:{{ tag.name }}{% endblock %}
+{% block header %}Tag:{{ tag.name }}{% endblock %}
+
+{% block content %}
+{% if perms.wiki.change_tag %}
+<div class="text-right">
+	<div class="btn-group">
+		<a href="{% url 'wiki-tag-edit' tag.slug %}" class="btn btn-xs btn-default" id="edit-page">Edit</a>
+	</div>
+</div>
+{% endif %}
+<div class="tag-description">{{ tag.html }}</div>
+<div class="tag-articles">
+	<p class="hatnote">
+		There {{ tag.articles.count|pluralize:"is,are" }} {{ tag.articles.count }}
+		article{{ tag.articles.count|pluralize }} tagged {{ tag.name }}
+	</p>
+	<div class="row">
+		{% for article in tag.articles.all %}
+		<div class="col-lg-4 col-sm-6"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></div>
+		{% endfor %}
+	</div>
+</div>
+{% endblock content %}
+

@@ -38,6 +38,9 @@ class Tag(models.Model):
 
         return super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('wiki-tag', args=(self.slug,))
+
     class Meta:
         ordering = ('name',)
 

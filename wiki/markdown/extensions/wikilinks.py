@@ -20,7 +20,7 @@ class WikiLinksPreprocessor(Preprocessor):
     __WIKILINK_RE = re.compile(r'\[\[(?P<type>[a-zA-Z]+:)?(?P<link>.+?)(?:\|(?P<label>.+?))?\]\]')
 
     def run(self, lines):
-        self.namespace = self.md.Meta.get('namespace', ['']).strip()
+        self.namespace = self.md.Meta.get('namespace', '').strip()
         print(self.namespace)
 
         return [self.processLine(line) for line in lines]

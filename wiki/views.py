@@ -17,10 +17,9 @@ from wiki.pages import Error404
 
 # Create your views here.
 
-class TagView(TemplateView):
+class TagView(DetailView):
     model = Tag
     context_object_name = 'tag'
-    template_name = 'wiki/article_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
