@@ -8,6 +8,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView,UpdateView
 
 
+from wiki import forms
 from wiki import utils
 from wiki.markdown import Markdown
 from wiki.models import Article,Tag,Term
@@ -101,7 +102,7 @@ class WikiPageView(View):
 
 class WikiUpdateView(UpdateView):
     model = Article
-    fields = ('title','markdown','is_published','is_nsfw','is_spoiler')
+    form_class = forms.ArticleUpdateForm
 
     def get_object(self, queryset=None):
         queryset = queryset or self.get_queryset()
@@ -110,7 +111,7 @@ class WikiUpdateView(UpdateView):
 
 class WikiCreateView(CreateView):
     model = Article
-    fields = ('title','namespace','slug','markdown','is_published','is_nsfw','is_spoiler')
+    form_class = forms.ArticleCreateForm
 
     def get_initial(self):
         slug = self.kwargs['slug']
