@@ -1,0 +1,26 @@
+{% extends 'wiki/_base.html' %}
+{% load static %}
+
+{% block title %}Editing Tag: {{ tag.name }}{% endblock %}
+{% block header %}Editing Tag: {{ tag.name }}{% endblock %}
+
+{% block content %}
+<div class="tag_edit">
+	<form method="POST" id="tag-form">
+		{% csrf_token %}
+		{{ form.as_p }}
+		<div class="text-right">
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</form>
+</div>
+{% endblock content %}
+
+{% block styles %}
+<link href="{% static 'wiki/bootstrap-markdown.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'wiki/jquery.hotkeys.js' %}"></script>
+<script src="{% static 'wiki/bootstrap-markdown.js' %}"></script>
+{% endblock %}

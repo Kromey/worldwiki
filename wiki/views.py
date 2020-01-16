@@ -33,6 +33,11 @@ class TagView(TemplateView):
 
         return context
 
+class TagEditView(UpdateView):
+    model = Tag
+    context_object_name = 'tag'
+    fields = ('name','slug','description')
+
 
 class ArticleListView(ListView):
     queryset = Article.objects.filter(is_published=True).exclude(slug__startswith='special:')
