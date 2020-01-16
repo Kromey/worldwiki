@@ -154,6 +154,7 @@ class WikiCreateView(CreateView):
         return None
 
 class WikiMoveView(WikiUpdateView):
+    form_class = None
     fields = ('namespace','slug')
 
     def form_valid(self, form):
