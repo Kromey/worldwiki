@@ -44,7 +44,8 @@ class TaggableArticleMixin(ModelForm):
     def save(self, commit=True):
         # TODO: If commit is True, postpone saving tags until save_m2m() called
         # In the meantime, that function is not implemented
-        raise NotImplementedError()
+        if not commit:
+            raise NotImplementedError()
 
         obj = super().save(commit)
 
