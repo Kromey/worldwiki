@@ -24,11 +24,12 @@ class TagView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        tag = get_object_or_404(Tag, slug=self.kwargs['slug'])
+        articles = []
+        for article in self.object.articles.all():
+            if not article.is_redirect:
+                articles.append(article)
 
-        context['articles'] = tag.articles.all()
-        context['title'] = 'Articles tagged "{name}"'.format(name=tag.name)
-        context['description'] = tag.html
+        context['articles'] = articles
 
         return context
 

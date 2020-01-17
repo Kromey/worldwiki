@@ -14,11 +14,11 @@
 <div class="tag-description">{{ tag.html }}</div>
 <div class="tag-articles">
 	<p class="hatnote">
-		There {{ tag.articles.count|pluralize:"is,are" }} {{ tag.articles.count }}
-		article{{ tag.articles.count|pluralize }} tagged {{ tag.name }}
+		There {{ articles|pluralize:"is,are" }} {{ articles|length }}
+		article{{ articles|pluralize }} tagged {{ tag.name }}
 	</p>
 	<div class="row">
-		{% for article in tag.articles.all %}
+		{% for article in articles %}
 		<div class="col-lg-4 col-sm-6"><a href="{{ article.get_absolute_url }}">{{ article.title }}</a></div>
 		{% endfor %}
 	</div>
