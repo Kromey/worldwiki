@@ -146,7 +146,6 @@ div#article_edited {
 }
 
 a.wikilink.new {
-	text-decoration: dashed underline;
 	color: #ff1a1a;
 }
 a.wikilink.new:hover {
