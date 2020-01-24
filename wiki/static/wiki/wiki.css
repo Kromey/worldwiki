@@ -145,6 +145,13 @@ div#article_edited {
 	margin-top: 5px;
 }
 
+a[href^=http] {
+	background-image: url(./img/external_link.png);
+	background-repeat: no-repeat;
+	background-position: center right;
+	padding-right: 13px;
+}
+
 a.wikilink.new {
 	color: #ff1a1a;
 }
