@@ -11,7 +11,7 @@ class Markdown:
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
             'markdown.extensions.sane_lists',
-            TocExtension(permalink=True, baselevel=2, title='Contents'),
+            TocExtension(permalink=True, baselevel=2, title='Contents', toc_depth='2-4'),
             'wiki.markdown.extensions.strikethrough',
             'wiki.markdown.extensions.tbd',
             'wiki.markdown.extensions.wikilinks',
