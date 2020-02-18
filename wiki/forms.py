@@ -15,7 +15,7 @@ class TaggableArticleMixin(ModelForm):
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance')
         if instance:
-            tags = ','.join([tag.name for tag in instance.tags.all()])
+            tags = ', '.join([tag.name for tag in instance.tags.all()])
             if tags:
                 initial = kwargs.get('initial', {})
                 initial['tag_list'] = tags
