@@ -2,7 +2,7 @@ from markdown.extensions import Extension
 from markdown.inlinepatterns import SimpleTagInlineProcessor
 
 
-TBD_RE = r'(\b)(TBD|TODO)\1'
+TBD_RE = r'()(\((?:TBD|TODO).*?\)|\b(?:TBD|TODO)\b)\1'
 
 
 class TBDExtension(Extension):
