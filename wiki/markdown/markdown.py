@@ -11,7 +11,7 @@ class Markdown:
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
             'markdown.extensions.sane_lists',
-            TocExtension(permalink=True, baselevel=2),
+            TocExtension(permalink=True, baselevel=2, title='Contents'),
             'wiki.markdown.extensions.strikethrough',
             'wiki.markdown.extensions.tbd',
             'wiki.markdown.extensions.wikilinks',
@@ -29,6 +29,15 @@ class Markdown:
         cls.__converter.Meta = meta
         html = cls.__converter.convert(md)
         html = cls.__linker.linkify(html)
+
+        if not '[TOC]' in md and cls.__converter.toc.count('<li>') >= 3:
+            lines = html.splitlines()
+            for i in range(len(lines)):
+                if lines[i].startswith('<h'):
+                    break
+
+            lines.insert(i, cls.__converter.toc)
+            html = '\n'.join(lines)
 
         return html
 
