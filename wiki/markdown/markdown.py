@@ -10,6 +10,7 @@ class Markdown:
             'markdown.extensions.extra',
             'markdown.extensions.smarty',
             'markdown.extensions.admonition',
+            'markdown.extensions.sane_lists',
             TocExtension(permalink=True, baselevel=2),
             'wiki.markdown.extensions.strikethrough',
             'wiki.markdown.extensions.tbd',
