@@ -5,6 +5,7 @@ from markdown.extensions.toc import TocExtension
 
 
 markdown_tags.append('del')
+markdown_tags.append('dl')
 markdown_attrs['*'].append('class')
 
 class Markdown:
